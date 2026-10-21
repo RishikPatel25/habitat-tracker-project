@@ -94,9 +94,9 @@ function streaksFor(habit, checksData, today) {
  * Month ring = completed + explicitly shown pre-marked plans / full-month
  * scheduled goal. The ring is labeled as a projection in the UI.
  * Habit rate = checked scheduled occurrences / this habit's eligible dates.
- * Seven-day rate = completed eligible occurrences / eligible occurrences in
- * the trailing seven calendar dates. This weights each scheduled habit-day
- * equally, matching daily and weekly rates. Values remain unrounded until display.
+ * Seven-day average = the arithmetic mean of valid daily rates in the trailing
+ * seven calendar dates, skipping dates with no eligible habits. Values remain
+ * unrounded until display.
  */
 export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}, year, month, now = new Date() }) {
   if (!Number.isInteger(year) || year < 1 || !Number.isInteger(month) || month < 0 || month > 11 || !(now instanceof Date) || !Number.isFinite(now.getTime())) return emptyAnalytics();
@@ -157,14 +157,22 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
     ? dailyPlannedDone[index] / dailyPlannedGoal[index] * 100
     : dateFor(year, month, index + 1) <= today ? rate : null);
   const dailyAverage = dailyRates.map((_, index) => {
-    if (dateFor(year, month, index + 1) > today) return null;
-    const start = Math.max(0, index - 6);
-    let done = 0, goal = 0;
-    for (let day = start; day <= index; day++) {
-      done += dailyDone[day];
-      goal += dailyGoal[day];
+    const end = dateFor(year, month, index + 1);
+    if (end > today) return null;
+    const start = new Date(end);
+    start.setDate(start.getDate() - 6);
+    const rates = [];
+    for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+      const key = getMonthKey(date.getFullYear(), date.getMonth());
+      let done = 0, goal = 0;
+      for (const habit of habits) {
+        if (!isHabitEligibleOnDate(habit, date)) continue;
+        goal++;
+        if (checksData?.[key]?.[habit.id]?.[date.getDate()] === true) done++;
+      }
+      if (goal) rates.push(done / goal * 100);
     }
-    return goal ? done / goal * 100 : null;
+    return rates.length ? rates.reduce((sum, rate) => sum + rate, 0) / rates.length : null;
   });
   const weekly = weeklyTotals.map((week) => {
     const includesPlan = week.plannedDone > 0;

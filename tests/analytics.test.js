@@ -115,6 +115,25 @@ test('seven calendar-day moving average ignores dates with no eligible occurrenc
   assert.ok(Math.abs(result.dailyAverage[9] - (100 / 3)) < 1e-10); // valid eligible days Oct 5 and Oct 7/9 in the trailing seven dates.
 });
 
+test('seven-day average equally weights valid daily rates when daily habit counts differ', () => {
+  const habits = [
+    { ...habit, schedule: [0, 1, 2, 3, 4, 5, 6] },
+    { id: 'monday', title: 'Monday', startDate: '2026-10-01', schedule: [1] },
+  ];
+  const checksData = { '2026-9': { h1: { 6: true, 7: true, 8: true, 9: true, 10: true, 11: true }, monday: { 5: true } } };
+  const result = calculateDashboardAnalytics({ habits, checksData, year: 2026, month: 9, now: new Date(2026, 9, 11, 12) });
+  assert.ok(Math.abs(result.dailyAverage[10] - (650 / 7)) < 1e-10);
+});
+
+test('seven-day average spans the previous month boundary', () => {
+  const checksData = {
+    '2026-9': { h1: { 27: true, 28: true, 29: true, 30: true, 31: true } },
+    '2026-10': { h1: { 1: true } },
+  };
+  const result = calculateDashboardAnalytics({ habits: [habit], checksData, year: 2026, month: 10, now: new Date(2026, 10, 2, 12) });
+  assert.ok(Math.abs(result.dailyAverage[1] - (600 / 7)) < 1e-10);
+});
+
 test('invalid selected month returns safe finite empty analytics', () => {
   const result = calculateDashboardAnalytics({ habits: [habit], checksData: {}, year: 2026, month: 12, now: today });
   assert.equal(result.monthGoal, 0); assert.equal(result.overallPercent, 0); assert.deepEqual(result.dailyRates, []);
