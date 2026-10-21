@@ -427,11 +427,11 @@ function recalculateStatsAndCharts(){
 
   const a=calculateDashboardAnalytics({habits:trackerState.habits,checksData:trackerState.checksData,sleepData:trackerState.sleepData,year:trackerState.year,month:trackerState.month,now:new Date()});
 
-  $('statGoal').textContent=a.monthGoal;$('statCompleted').textContent=a.done;$('statLeft').textContent=a.remaining;$('donutPercent').textContent=Math.round(a.overallPercent)+'%';$('donutSub').textContent=a.monthGoal?`${a.done} done · ${a.planned} plan`:'No eligible scheduled habits';
+  $('statGoal').textContent=a.monthGoal;$('statCompleted').textContent=a.done;$('statPlanned').textContent=a.planned;$('statLeft').textContent=a.remaining;$('donutPercent').textContent=Math.round(a.overallPercent)+'%';$('donutSub').textContent=a.monthGoal?`${a.done} done · ${a.planned} planned`:'No eligible scheduled habits';
 
-  $('statGoal').title='All eligible scheduled habit-days in this month, including clearly labeled planned goals';$('statCompleted').title='Completed scheduled days through today';$('statLeft').title='Scheduled days not completed or pre-marked';
+  $('statGoal').title='All eligible scheduled habit-days in this month';$('statCompleted').title='Completed scheduled days through today';$('statPlanned').title='Future scheduled days explicitly checked in advance';$('statLeft').title='Eligible scheduled days neither completed nor planned';
 
-  $('avgDailyRate').textContent='Avg '+Math.round(a.averageDailyRate)+'%';$('statStreak').textContent=a.currentStreak+'d';$('statStreak').title='Longest current streak among active habits';
+  $('avgDailyRate').textContent='Avg '+Math.round(a.averageDailyRate)+'%';
 
   charts?.update({dailyBars:a.dailyBars,dailyAverage:a.dailyAverage,dailyDone:a.dailyDone,dailyGoal:a.dailyGoal,dailyPlannedDone:a.dailyPlannedDone,dailyPlannedGoal:a.dailyPlannedGoal,plannedDays:a.plannedDays,weekly:a.weekly,overallPercent:a.overallPercent});renderAnalysisTable(a.habitStats);renderGoalFeatures();
 

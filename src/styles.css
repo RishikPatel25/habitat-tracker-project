@@ -431,7 +431,10 @@ html[data-density=spacious]{--density-row:37px;--density-gap:16px}
 
 /* Give the habit list more of the desktop viewport while keeping all controls. */
 @media(min-width:901px){
-  #app{grid-template-rows:auto minmax(138px,22%) minmax(0,1fr) auto}
+  #app{grid-template-rows:auto minmax(160px,24%) minmax(0,1fr) auto}
+  .sumwrap{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:10px}
+  .glass .ring b{font-size:clamp(24px,1.8vw,29px)}
+  .glass .ring small{max-width:92%;font-size:clamp(9px,.75vw,11px);line-height:1.2;text-align:center}
   .rank .rl{padding:6px 10px}
   .rk li{padding:6px 10px;gap:4px}
   .rk .v strong{font-size:16px}

@@ -76,14 +76,14 @@ try {
       <div class="cv"><canvas id="weeklyChart"></canvas></div>
     </section>
     <section class="box pad glass">
-      <div class="row"><h2>Overall</h2><span class="sub">Month projection</span></div>
+      <div class="row"><h2>Overall</h2><span class="sub" title="Completed and planned scheduled habit-days divided by all eligible scheduled habit-days this month">Done + planned / month goal</span></div>
       <div class="sumwrap">
-        <div class="ring"><canvas id="donutChart"></canvas><div class="rc"><b id="donutPercent">0%</b><small id="donutSub"></small></div></div>
+        <div class="ring"><canvas id="donutChart" aria-label="Monthly projected completion"></canvas><div class="rc"><b id="donutPercent">0%</b><small id="donutSub"></small></div></div>
         <div class="tiles">
-          <div class="tile"><span>Month goal</span><strong id="statGoal">0</strong></div>
+          <div class="tile"><span>Scheduled goal</span><strong id="statGoal">0</strong></div>
           <div class="tile"><span>Done</span><strong id="statCompleted">0</strong></div>
-          <div class="tile"><span>Left</span><strong id="statLeft">0</strong></div>
-          <div class="tile"><span>Streak</span><strong id="statStreak">0d</strong></div>
+          <div class="tile"><span>Planned</span><strong id="statPlanned">0</strong></div>
+          <div class="tile"><span>Remaining</span><strong id="statLeft">0</strong></div>
         </div>
       </div>
     </section>
