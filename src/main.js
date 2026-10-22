@@ -521,7 +521,16 @@ function archiveHabit(id){const h=trackerState.habits.find(x=>x.id===id);if(!h||
 
 function restoreHabit(){if(!trackerState.archivedHabits.length){storageWarning('There are no archived habits.');return}const choices=trackerState.archivedHabits.map((h,i)=>`${i+1}. ${h.title}`).join('\n'),pick=Number(prompt(`Restore an archived habit by number:\n${choices}`));if(!Number.isInteger(pick)||pick<1||pick>trackerState.archivedHabits.length)return;const previousHabits=cloneRecords(trackerState.habits),previousArchived=cloneRecords(trackerState.archivedHabits),id=trackerState.archivedHabits[pick-1].id,result=restoreHabitInState(trackerState,id,localISO(new Date()));if(!result.ok){storageWarning(result.error);return}if(!persistHabitLists(previousHabits,previousArchived))return;updateCalendar()}
 
-function deleteHabit(id){const h=trackerState.habits.find(x=>x.id===id);if(!h||!confirm(`Permanently remove “${h.title}” from this tracker? Historical completion records will be retained.`))return;const previous=cloneRecords(trackerState.habits);deleteHabitFromState(trackerState,id);if(!saveHabits()){trackerState.habits=previous;return}updateCalendar()}
+function deleteHabit(id){
+  const previous={habits:cloneRecords(trackerState.habits),archivedHabits:cloneRecords(trackerState.archivedHabits),checksData:cloneRecords(trackerState.checksData),goals:cloneRecords(trackerState.goals)};
+  if(!deleteHabitFromState(trackerState,id))return;
+  if(!write('ht_habits',trackerState.habits)||!write('ht_archived',trackerState.archivedHabits)||!write('ht_checks',trackerState.checksData)||!write('ht_goals',trackerState.goals)){
+    Object.assign(trackerState,previous);
+    write('ht_habits',previous.habits);write('ht_archived',previous.archivedHabits);write('ht_checks',previous.checksData);write('ht_goals',previous.goals);
+    return;
+  }
+  updateCalendar();
+}
 
 function reorderHabit(id,delta){const previous=cloneRecords(trackerState.habits);if(!reorderHabitInState(trackerState,id,delta))return;if(!saveHabits()){trackerState.habits=previous;return}updateCalendar()}
 

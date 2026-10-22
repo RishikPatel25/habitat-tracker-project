@@ -74,10 +74,18 @@ export function restoreHabitInState(state, id, today) {
 }
 
 export function deleteHabitFromState(state, id) {
-  const index = state.habits.findIndex((habit) => habit.id === id);
-  if (index < 0) return false;
-  state.habits.splice(index, 1);
-  // Completion logs are keyed by habit id and intentionally retained for recovery/history.
+  const activeIndex = state.habits.findIndex((habit) => habit.id === id);
+  const archivedIndex = state.archivedHabits?.findIndex((habit) => habit.id === id) ?? -1;
+  if (activeIndex < 0 && archivedIndex < 0) return false;
+  if (activeIndex >= 0) state.habits.splice(activeIndex, 1);
+  if (archivedIndex >= 0) state.archivedHabits.splice(archivedIndex, 1);
+
+  for (const [month, records] of Object.entries(state.checksData || {})) {
+    if (!records || typeof records !== 'object' || Array.isArray(records)) continue;
+    delete records[id];
+    if (!Object.keys(records).length) delete state.checksData[month];
+  }
+  if (Array.isArray(state.goals)) state.goals = state.goals.filter((goal) => goal.habitId !== id);
   return true;
 }
 
