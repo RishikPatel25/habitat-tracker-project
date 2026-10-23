@@ -15,6 +15,9 @@ const publishedAssets = new Set([
   'landing-habits-detail.png',
   'landing-showcase-video.mp4',
   'landing-signin-preview.png',
+  'ritual-habit-logo-source.png',
+  'ritual-habit-symbol.svg',
+  'ritual-habit-full.svg',
 ]);
 
 async function copySourceTree(source, destination) {

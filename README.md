@@ -1,6 +1,6 @@
-# Habit Tracker
+# Ritual Habit
 
-A browser based habit tracker built with plain HTML, CSS, and native JavaScript modules. The dashboard works in local-only mode by default; an optional Supabase provider can add accounts and cloud sync without replacing the existing storage or analytics. No build step is required. Chart.js 4.4.1 remains the dashboard chart library and is loaded from its pinned jsDelivr URL; Hanken Grotesk remains an optional Google Font.
+Ritual Habit is a browser based habit tracker built with plain HTML, CSS, and native JavaScript modules. The dashboard works in local-only mode by default; an optional Supabase provider can add accounts and cloud sync without replacing the existing storage or analytics. No build step is required. Chart.js 4.4.1 remains the dashboard chart library and is loaded from its pinned jsDelivr URL; Hanken Grotesk remains an optional Google Font.
 
 ## Start
 
@@ -51,7 +51,8 @@ The previous standalone page remains available at its original path. Two histori
 
 ## Project layout
 
-- `index.html`: existing dashboard markup with module and stylesheet references
+- `index.html`: public landing page and product metadata
+- `tracker.html`: habit dashboard markup with module and stylesheet references
 - `src/main.js`: app startup, UI coordination, existing controls and report download
 - `src/styles.css`: extracted dashboard styles
 - `src/features/analytics/`: shared calculations and chart rendering

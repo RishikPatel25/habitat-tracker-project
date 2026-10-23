@@ -34,7 +34,7 @@ export function createCharts({ css, warn }) {
     [dailyChart, weeklyChart, donutChart].forEach((chart) => chart?.destroy());
     dailyChart = weeklyChart = donutChart = null;
     const Chart = window.Chart;
-    if (typeof Chart !== 'function') { warn('Charts are unavailable because Chart.js could not be loaded. The habit tracker is still ready to use.'); return false; }
+    if (typeof Chart !== 'function') { warn('Charts are unavailable because Chart.js could not be loaded. The Ritual Habit is still ready to use.'); return false; }
     const canvases = ['dailyChart', 'weeklyChart', 'donutChart'].map((id) => document.getElementById(id));
     if (canvases.some((canvas) => !canvas)) { warn('Charts could not start because a dashboard chart element is missing.'); return false; }
     const text = css('--text-primary'), accent = css('--accent'), muted = css('--text-secondary');
@@ -93,7 +93,7 @@ export function createCharts({ css, warn }) {
     return true;
     } catch (error) {
       [nextDaily, nextWeekly, nextDonut].forEach((chart) => chart?.destroy());
-      console.error('[Habit Tracker] Chart initialization failed.', error);
+      console.error('[Ritual Habit] Chart initialization failed.', error);
       warn('Charts could not be initialized. Tracking and saved data are still available.');
       return false;
     }
@@ -121,7 +121,7 @@ export function createCharts({ css, warn }) {
       });
       return true;
     } catch (error) {
-      console.error('[Habit Tracker] Chart theme update failed.', error);
+      console.error('[Ritual Habit] Chart theme update failed.', error);
       warn('Charts could not update their theme. Tracking and saved data are still available.');
       return false;
     }
@@ -155,7 +155,7 @@ export function createCharts({ css, warn }) {
       donutChart.update();
       return true;
     } catch (error) {
-      console.error('[Habit Tracker] Chart update failed.', error);
+      console.error('[Ritual Habit] Chart update failed.', error);
       [dailyChart, weeklyChart, donutChart].forEach((chart) => chart?.destroy());
       dailyChart = weeklyChart = donutChart = null;
       warn('Charts could not update. Tracking and saved data are still available.');

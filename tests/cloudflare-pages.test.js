@@ -38,7 +38,10 @@ test('Pages config endpoint rejects writes and handles HEAD without returning a 
 test('public landing SEO is indexable while the dashboard is explicitly non-indexable', async () => {
   const landing = await read('../index.html');
   const dashboard = await read('../tracker.html');
-  assert.match(landing, /<title>Habit Tracker — Build a rhythm that feels like yours<\/title>/);
+  assert.match(landing, /<title>Ritual Habit — Build a rhythm that feels like yours<\/title>/);
+  assert.match(landing, /name="application-name" content="Ritual Habit"/);
+  assert.match(landing, /ritual-habit-symbol\.svg/);
+  assert.match(dashboard, /<title>Ritual Habit<\/title>/);
   assert.match(landing, /name="description"/);
   assert.match(landing, /rel="canonical" href="https:\/\/YOUR_PRODUCTION_DOMAIN\/"/);
   assert.match(landing, /property="og:image"/);
@@ -56,6 +59,9 @@ test('Pages bundle includes only site assets and excludes credentials, repositor
   await access(new URL('../dist/index.html', import.meta.url));
   await access(new URL('../dist/src/main.js', import.meta.url));
   await access(new URL('../dist/src/assets/landing-dashboard-01.png', import.meta.url));
+  await access(new URL('../dist/src/assets/ritual-habit-logo-source.png', import.meta.url));
+  await access(new URL('../dist/src/assets/ritual-habit-symbol.svg', import.meta.url));
+  await access(new URL('../dist/src/assets/ritual-habit-full.svg', import.meta.url));
   await access(new URL('../dist/_redirects', import.meta.url));
   await access(new URL('../dist/_headers', import.meta.url));
   await access(new URL('../dist/robots.txt', import.meta.url));

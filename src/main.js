@@ -395,7 +395,7 @@ function buildMonthlyReportHtml(r){
 
 *{box-sizing:border-box}body{margin:0;padding:40px 18px;background:#f3f5f7;color:#20252c;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}.report{max-width:900px;margin:auto;background:#fff;border:1px solid #d7dce2;border-radius:16px;padding:34px;box-shadow:0 14px 44px #11131812}header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}h1{font-size:28px;line-height:1.15;margin:0 0 6px;letter-spacing:-.03em}.muted{color:#5b6470}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11px;font-weight:700;color:#667080}.print{border:0;border-radius:8px;background:#364152;color:white;padding:10px 14px;font:inherit;font-weight:650;cursor:pointer}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0}.card{padding:16px;border:1px solid #dfe3e8;border-radius:11px;background:#fafbfc}.card span{display:block;font-size:12px;color:#5b6470}.card strong{display:block;margin-top:3px;font-size:25px;line-height:1.15}.grade-card{background:#f3f0ff;border-color:#ded5fa}.grade-card strong{color:#6046a7}.grade-card.great{background:#edf7f0;border-color:#cde5d4}.grade-card.great strong{color:#287249}.grade-card.none{background:#f3f5f7}.progress-line{height:10px;border-radius:10px;background:#e6e9ed;overflow:hidden;margin-top:12px}.progress-line i,.track i{display:block;height:100%;border-radius:inherit;background:#557c66}h2{font-size:17px;margin:27px 0 10px}table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:13px}td{overflow-wrap:anywhere}th{text-align:left;color:#5b6470;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}td,th{padding:11px 8px;border-bottom:1px solid #e6e9ed}td:first-child{width:34%}td:first-child small{display:block;color:#69727e;margin-left:26px}.habit-icon{display:inline-block;width:22px}.track{display:inline-block;vertical-align:middle;width:min(100px,55%);height:7px;border-radius:9px;background:#e6e9ed;overflow:hidden;margin-right:7px}.track i{background:#557c66}.percent{color:#5b6470}.mini-grade{display:inline-block;min-width:34px;padding:3px 7px;background:#f0f2f5;border-radius:6px;text-align:center}.empty{text-align:center;color:#5b6470;padding:24px}.notes{margin-top:23px;padding:14px 16px;border-radius:10px;background:#f6f7f9;color:#515b67;font-size:13px}.notes p{margin:4px 0}.footer{margin-top:26px;padding-top:14px;border-top:1px solid #e6e9ed;color:#69727e;font-size:11px}@media(max-width:620px){body{padding:12px 8px}.report{padding:20px 14px}.summary{grid-template-columns:repeat(2,1fr)}header{align-items:flex-start}h1{font-size:23px}table{font-size:11px}td,th{padding:9px 4px}.track{width:42px}}@media print{body{padding:0;background:#fff}.report{max-width:none;border:0;border-radius:0;box-shadow:none;padding:0}.print{display:none}.summary{break-inside:avoid}tr{break-inside:avoid}}
 
-</style></head><body><main class="report"><header><div><div class="eyebrow">Habit Tracker · Monthly Report</div><h1>${esc(r.monthLabel)}</h1><p class="muted">${r.endDay?`Progress through ${new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'}).format(dateFor(r.year,r.month,r.endDay))}`:'No days in this month have occurred yet.'}</p></div><button class="print" onclick="window.print()">Print / Save as PDF</button></header>
+</style></head><body><main class="report"><header><div><div class="eyebrow">Ritual Habit · Monthly Report</div><h1>${esc(r.monthLabel)}</h1><p class="muted">${r.endDay?`Progress through ${new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'}).format(dateFor(r.year,r.month,r.endDay))}`:'No days in this month have occurred yet.'}</p></div><button class="print" onclick="window.print()">Print / Save as PDF</button></header>
 
 <section class="summary"><div class="card"><span>Progress</span><strong>${pct(r.percent)}</strong><div class="progress-line"><i style="width:${bar(r.percent)}"></i></div></div><div class="card"><span>Completed</span><strong>${r.done}</strong></div><div class="card"><span>Scheduled goal</span><strong>${r.goal}</strong></div><div class="card grade-card ${gradeTone}"><span>Monthly mark</span><strong>${r.grade.mark}</strong><span>${esc(r.grade.label)}</span></div></section>
 
@@ -619,9 +619,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 function downloadBlob(blob,filename){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 
-function exportAppData(){try{const blob=new Blob([JSON.stringify(exportLocalData(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`habit-tracker-backup-${localISO(new Date())}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch{storageWarning('Could not export Habit Tracker data in this browser.')}}
+function exportAppData(){try{const blob=new Blob([JSON.stringify(exportLocalData(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`ritual-habit-backup-${localISO(new Date())}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch{storageWarning('Could not export Ritual Habit data in this browser.')}}
 
-function downloadMonthlyCsv(){closeDownloadReports();try{const r=monthlyReportData(),csv=buildMonthlyCsv({report:r,habits:trackerState.habits,archivedHabits:trackerState.archivedHabits,checksData:trackerState.checksData}),blob=new Blob([csv],{type:'text/csv;charset=utf-8'});downloadBlob(blob,`habit-tracker-${r.year}-${String(r.month+1).padStart(2,'0')}.csv`)}catch{storageWarning('Could not create the monthly CSV export in this browser.')}}
+function downloadMonthlyCsv(){closeDownloadReports();try{const r=monthlyReportData(),csv=buildMonthlyCsv({report:r,habits:trackerState.habits,archivedHabits:trackerState.archivedHabits,checksData:trackerState.checksData}),blob=new Blob([csv],{type:'text/csv;charset=utf-8'});downloadBlob(blob,`ritual-habit-${r.year}-${String(r.month+1).padStart(2,'0')}.csv`)}catch{storageWarning('Could not create the monthly CSV export in this browser.')}}
 
 async function downloadMonthlyPng(){
   closeDownloadReports();
@@ -630,7 +630,7 @@ async function downloadMonthlyPng(){
     await new Promise((resolve)=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     const r=monthlyReportData(),canvas=renderMonthlyReportCanvas(r,{background:css('--bg'),surface:css('--surf'),text:css('--text-primary'),muted:css('--text-secondary'),line:css('--line'),accent:css('--accent'),fontFamily:getComputedStyle(document.body).fontFamily});
     const blob=await new Promise((resolve,reject)=>canvas.toBlob((image)=>image?resolve(image):reject(new Error('PNG encoding returned no image.')),'image/png'));
-    downloadBlob(blob,`habit-tracker-${r.year}-${String(r.month+1).padStart(2,'0')}.png`);
+    downloadBlob(blob,`ritual-habit-${r.year}-${String(r.month+1).padStart(2,'0')}.png`);
   }catch{storageWarning('Could not create the monthly PNG export in this browser.');}
 }
 
@@ -650,14 +650,14 @@ async function downloadMonthlyPdf(){
       for(let index=0;index<binary.length;index++)jpegBytes[index]=binary.charCodeAt(index);
       pages.push({jpegBytes,width:pageCanvas.width,height:pageCanvas.height});
     }
-    const blob=buildImagePdfBlob(pages),filename=`habit-tracker-${r.year}-${String(r.month+1).padStart(2,'0')}.pdf`;
+    const blob=buildImagePdfBlob(pages),filename=`ritual-habit-${r.year}-${String(r.month+1).padStart(2,'0')}.pdf`;
     downloadBlob(blob,filename);
   }catch(error){storageWarning(`Could not create the PDF download${error?.message?`: ${error.message}`:'.'}`)}
 }
 
 function openImportPicker(){$('importDataInput').click()}
 
-async function handleImportFile(event){const file=event.target.files?.[0];if(!file)return;try{const payload=JSON.parse(await file.text());let allowReplace=false;try{allowReplace=confirm('Importing replaces the Habit Tracker data in this browser. A recovery backup will be saved first. Continue?')}catch{}importLocalData(payload,localStorage,{allowReplace});alert('Habit Tracker data imported. The page will reload now.');location.reload()}catch(error){storageWarning(error.message||'Could not import this backup. Existing data was preserved.')}finally{event.target.value=''}}
+async function handleImportFile(event){const file=event.target.files?.[0];if(!file)return;try{const payload=JSON.parse(await file.text());let allowReplace=false;try{allowReplace=confirm('Importing replaces the Ritual Habit data in this browser. A recovery backup will be saved first. Continue?')}catch{}importLocalData(payload,localStorage,{allowReplace});alert('Ritual Habit data imported. The page will reload now.');location.reload()}catch(error){storageWarning(error.message||'Could not import this backup. Existing data was preserved.')}finally{event.target.value=''}}
 
 $('importDataInput')?.addEventListener('change',handleImportFile);
 

@@ -80,7 +80,7 @@ if (!Number.isInteger(startingPort) || startingPort < 1 || startingPort > 65535)
       if (error.code === 'EADDRINUSE') {
         console.error(`Port ${port} is already in use. Stop the other server or choose another port with PORT=<port>.`);
       } else {
-        console.error(`Could not start Habit Tracker: ${error.message}`);
+        console.error(`Could not start Ritual Habit: ${error.message}`);
       }
       process.exitCode = 1;
     };
@@ -88,7 +88,7 @@ if (!Number.isInteger(startingPort) || startingPort < 1 || startingPort > 65535)
     server.once('error', onError);
     server.listen(port, '127.0.0.1', () => {
       server.removeListener('error', onError);
-      console.log(`Habit Tracker running at http://127.0.0.1:${port}`);
+      console.log(`Ritual Habit running at http://127.0.0.1:${port}`);
     });
   }
 

@@ -69,7 +69,7 @@ export function buildImagePdfBlob(pages, { pageWidth = 612 } = {}) {
     objects[contentId] = encoder.encode(`<< /Length ${content.length} >>\nstream\n${new TextDecoder().decode(content)}\nendstream`);
   });
 
-  const chunks = [encoder.encode('%PDF-1.4\n% Habit Tracker report\n')], offsets = [0];
+  const chunks = [encoder.encode('%PDF-1.4\n% Ritual Habit report\n')], offsets = [0];
   let byteOffset = chunks[0].length;
   for (let id = 1; id < objects.length; id++) {
     offsets[id] = byteOffset;
@@ -126,7 +126,7 @@ export function renderMonthlyReportCanvas(report, {
   context.scale(pixelScale, pixelScale);
   context.fillStyle = background; context.fillRect(0, 0, width, height);
   context.fillStyle = text; context.font = `600 30px ${fontFamily}`;
-  context.fillText('Habit Tracker', 40, 48);
+  context.fillText('Ritual Habit', 40, 48);
   context.fillStyle = muted; context.font = `16px ${fontFamily}`;
   context.fillText(`${report.monthLabel} · Monthly report`, 40, 76);
 

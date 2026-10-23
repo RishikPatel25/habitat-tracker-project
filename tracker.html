@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="theme-color" content="#080a0f">
+<meta name="theme-color" content="#050607">
+<meta name="application-name" content="Ritual Habit">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<title>Habit Tracker</title>
+<title>Ritual Habit</title>
 <style>html.cloud-booting #app{visibility:hidden}#cloudBoot{display:none}html.cloud-booting #cloudBoot{position:fixed;inset:0;display:grid;place-items:center;background:#080a0f;color:#f2f4f8;z-index:200;font:14px system-ui,sans-serif}</style>
 <script>document.documentElement.classList.add('cloud-booting')</script>
 <script>
@@ -24,10 +25,10 @@ try {
 <link rel="stylesheet" href="/src/styles.css">
 </head>
 <body>
-<div id="cloudBoot" role="status">Loading your Habit Tracker…</div>
+<div id="cloudBoot" role="status">Loading Ritual Habit…</div>
 <div id="app">
   <header>
-    <div class="brand"><h1>Habit Tracker</h1><span class="sub">Consistency wins</span></div>
+    <a class="brand" href="/" aria-label="Ritual Habit home"><img src="/src/assets/ritual-habit-symbol.svg" alt="" class="dashboard-brand-mark"><span class="dashboard-wordmark"><strong>RITUAL</strong><small>HABIT</small></span></a>
     <div class="header-actions">
       <nav class="primary-nav" aria-label="Primary actions">
         <div class="notewrap">
@@ -61,7 +62,7 @@ try {
           <div class="more-pop" role="group" aria-label="More dashboard actions">
             <div class="more-group"><h2>Sync status</h2><span class="cloud-indicator" id="cloudSyncIndicator" role="status" aria-label="Local only" title="Local only">Local only</span></div>
             <div class="more-group"><h2>Appearance</h2><button class="more-item" type="button" onclick="toggleTheme();closeMoreMenu()">Switch theme</button></div>
-            <div class="more-group"><h2>Other tools</h2><button class="more-item" type="button" onclick="exportAppData();closeMoreMenu()" title="Export your saved habits and logs">Export data</button><button class="more-item" type="button" onclick="closeMoreMenu();openImportPicker()" title="Import a Habit Tracker backup">Import data</button><button class="more-item" type="button" onclick="closeMoreMenu();restoreHabit()" aria-label="Restore archived habit">Archived habits</button></div>
+            <div class="more-group"><h2>Other tools</h2><button class="more-item" type="button" onclick="exportAppData();closeMoreMenu()" title="Export your saved habits and logs">Export data</button><button class="more-item" type="button" onclick="closeMoreMenu();openImportPicker()" title="Import a Ritual Habit backup">Import data</button><button class="more-item" type="button" onclick="closeMoreMenu();restoreHabit()" aria-label="Restore archived habit">Archived habits</button></div>
           </div>
         </details>
         <button class="profile-trigger" id="accountBtn" type="button" onclick="openAccountDialog()" aria-label="Sign in to your account" aria-haspopup="dialog" aria-expanded="false"><span class="profile-avatar" id="profileAvatar" aria-hidden="true">U</span><span class="profile-label" id="profileLabel">Sign in</span></button>
@@ -172,7 +173,7 @@ try {
     <button class="account-close" type="button" onclick="closeAccountDialog()" aria-label="Close account dialog">&times;</button>
     <div class="account-orbit orbit-one"></div><div class="account-orbit orbit-two"></div>
     <div class="account-content">
-      <div class="account-mark" aria-hidden="true"><span>H</span></div>
+      <img class="account-logo" src="/src/assets/ritual-habit-full.svg" alt="Ritual Habit logo">
       <p class="account-eyebrow">YOUR PERSONAL SPACE</p>
       <h2 id="accountTitle">Welcome back</h2>
       <p class="account-description">Sign in to sync your habits and progress.</p>

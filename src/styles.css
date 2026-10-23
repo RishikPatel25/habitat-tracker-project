@@ -13,8 +13,12 @@ h2{font-size:12px;font-weight:500}
 .cv{position:relative;flex:1;min-height:0}
 em{font-style:normal;filter:grayscale(1)}
 header{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:2px 0 4px}
-.brand{display:flex;align-items:baseline;gap:12px;flex:none;white-space:nowrap}
+.brand{display:flex;align-items:center;gap:9px;flex:none;white-space:nowrap;color:inherit;text-decoration:none}
 .brand h1,.brand .sub{white-space:nowrap}
+.dashboard-brand-mark{display:block;width:34px;height:34px;flex:none;border:1px solid var(--line);border-radius:9px;background:#050607;object-fit:cover}
+.dashboard-wordmark{display:flex;flex-direction:column;gap:1px;line-height:1;letter-spacing:.2em}
+.dashboard-wordmark strong{font:500 12px/1 Manrope,'Hanken Grotesk',sans-serif}
+.dashboard-wordmark small{padding-left:1px;color:var(--mut);font:400 8px/1 Manrope,'Hanken Grotesk',sans-serif;letter-spacing:.42em}
 .brand .sub{color:var(--body-muted,var(--mut))}
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex:1;min-width:0}
 .primary-nav,.header-utilities{display:flex;align-items:center;gap:5px;min-width:0}
@@ -393,6 +397,11 @@ html[data-density=spacious]{--density-row:37px;--density-gap:16px}
 @media(max-width:600px){#accountModal{padding:12px}#accountModal .account-box{width:calc(100vw - 24px);border-radius:23px}#accountModal .account-content{padding:32px 0 25px}}
 @media(prefers-reduced-motion:reduce){#accountModal .account-ambient-wrap{display:none}#accountModal .account-orbit{animation:none}}
 
+/* Ritual Habit identity */
+.account-logo{display:block;width:min(218px,62vw);height:auto;margin:0 auto 3px;object-fit:contain;mix-blend-mode:screen}
+.account-content .account-eyebrow{color:#aabbd0}
+.account-content .account-secure>span{background:#bcd9f5;box-shadow:0 0 10px #bcd9f57a}
+
 /* Minimal white glass treatment for the account panel */
 #accountModal .account-box{font-family:Manrope,'Hanken Grotesk',sans-serif;border:1px solid rgba(255,255,255,.58);border-radius:24px;background:linear-gradient(145deg,rgba(238,244,255,.16),rgba(180,197,226,.075) 42%,rgba(15,20,31,.36));box-shadow:0 28px 90px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.32),inset 0 0 0 1px rgba(255,255,255,.055)}
 #accountModal .account-box::before{background:linear-gradient(130deg,rgba(255,255,255,.14),transparent 34%,transparent 72%,rgba(255,255,255,.06))}
@@ -458,6 +467,8 @@ html[data-density=spacious]{--density-row:37px;--density-gap:16px}
   header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px 8px}
   .brand{grid-column:1;grid-row:1;min-width:0}
   .brand .sub{display:none}
+  .dashboard-brand-mark{width:30px;height:30px}
+  .dashboard-wordmark strong{font-size:11px}
   .header-actions{display:contents}
   .primary-nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;gap:5px}
   .primary-nav>.notewrap,.primary-nav>.calendar-wrap{min-width:0}

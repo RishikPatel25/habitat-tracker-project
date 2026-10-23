@@ -67,10 +67,10 @@ export function exportLocalData(storage = localStorage) {
 
 export function validateImport(payload) {
   if (!isPlainObject(payload) || payload.format !== 'habit-tracker-backup' || !isPlainObject(payload.data)) {
-    throw new Error('This file is not a Habit Tracker data backup.');
+    throw new Error('This file is not a Ritual Habit data backup.');
   }
   const entries = Object.entries(payload.data).filter(([key]) => DATA_KEYS.includes(key));
-  if (!entries.length) throw new Error('The backup does not contain Habit Tracker data.');
+  if (!entries.length) throw new Error('The backup does not contain Ritual Habit data.');
   for (const [key, raw] of entries) {
     if (typeof raw !== 'string') throw new Error(`The backup value for ${key} is invalid.`);
     const value = JSON.parse(raw);
