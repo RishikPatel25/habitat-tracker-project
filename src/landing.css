@@ -12,7 +12,6 @@
   --type-body:16px;
   --type-section:clamp(36px,4.4vw,54px);
   --type-hero:clamp(58px,6vw,82px);
-  --type-editorial:clamp(50px,8.5vw,110px);
   --leading-display:.99;
   --leading-copy:1.75;
 }
@@ -68,38 +67,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
 .visual-caption{position:absolute;right:14px;bottom:14px;left:14px;z-index:3;width:max-content;max-width:calc(100% - 28px);padding:9px 12px;border:1px solid #ffffff28;border-radius:4px;background:#121714b8;color:#f1f2ed;font-size:11px;line-height:1.4;backdrop-filter:blur(12px)}
 .visual-caption .status-dot,.experience-caption .status-dot{width:5px;height:5px;background:#aebd9e}
 .hero-meta{display:flex;grid-column:2;grid-row:2;width:100%;justify-content:space-between;gap:16px;padding:12px 1px 0;color:#62695f;font-size:10px;font-weight:500;letter-spacing:.11em}
-
-/* Editorial introduction */
-.intro-band{border-block:1px solid var(--line);background:var(--paper-alt)}
-.intro-inner{display:grid;grid-template-columns:.8fr 1.1fr .8fr;align-items:center;gap:35px;padding-block:69px}
-.intro-inner .eyebrow{margin:0}
-.intro-inner h2{margin:0;font-size:clamp(29px,3vw,39px);font-weight:500;line-height:1.2;letter-spacing:-.055em}
-.intro-inner>p:last-child{max-width:280px;margin:0;color:var(--muted);font-size:12px;line-height:1.9}
-
-/* Editorial brand statement and original Ritual Habit line animation */
-.editorial-band{overflow:hidden;border-block:1px solid var(--line);background:var(--paper-alt)}
-.editorial-inner{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);align-items:center;gap:22px clamp(28px,5vw,64px);padding-block:clamp(58px,8vw,98px)}
-.editorial-main{min-width:0}
-.editorial-main .eyebrow{margin-bottom:18px;color:#596653;font-size:var(--type-label)}
-.editorial-main h2{margin:0;font-size:var(--type-editorial);font-weight:600;line-height:.9;letter-spacing:-.085em}
-.editorial-main h2 span{color:var(--green)}
-.editorial-tagline{margin:19px 0 0;color:#555c52;font-size:clamp(15px,1.35vw,18px);line-height:1.55}
-.rhythm-art{width:100%;max-width:530px;justify-self:end;margin:0}
-.rhythm-art svg{display:block;width:100%;height:auto;overflow:visible}
-.rhythm-art path,.rhythm-art .art-calendar path{stroke-dasharray:1;stroke-dashoffset:1;animation:line-draw 15s cubic-bezier(.55,0,.25,1) infinite}
-.rhythm-art .art-calendar path{animation-delay:.3s}
-.rhythm-art .art-orbit{animation-delay:1s}
-.rhythm-art .art-rhythm{animation-delay:2.2s}
-.rhythm-art .art-chart{animation-delay:3.5s}
-.rhythm-art .art-node{opacity:0;animation:node-appear 15s ease-in-out infinite;animation-delay:7s}
-.rhythm-art .art-node-late{animation-delay:9s}
-.editorial-notes{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #d6dbd0;margin-top:14px}
-.editorial-notes article{padding:17px 22px 0 0}
-.editorial-notes article+article{padding-left:22px;border-left:1px solid #d6dbd0}
-.editorial-notes h3{margin:0 0 5px;color:#394236;font-size:var(--type-label);font-weight:600;letter-spacing:.005em}
-.editorial-notes p{max-width:300px;margin:0;color:#5f655b;font-size:13px;line-height:1.65}
-@keyframes line-draw{0%,5%{stroke-dashoffset:1;opacity:.55}48%,78%{stroke-dashoffset:0;opacity:1}96%,100%{stroke-dashoffset:1;opacity:.55}}
-@keyframes node-appear{0%,38%{opacity:0}48%,78%{opacity:1}96%,100%{opacity:0}}
 
 /* Product video */
 .experience-section{padding-block:118px 124px;scroll-margin-top:76px}
@@ -270,10 +237,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
   .hero-copy{max-width:720px;margin-bottom:30px;text-align:center}
   .hero h1{font-size:clamp(50px,6.2vw,64px)}
   .hero-visual{aspect-ratio:16/10}
-  .editorial-inner{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:20px clamp(18px,4vw,38px)}
-  .editorial-main h2{font-size:clamp(46px,7vw,76px)}
-  .intro-inner{grid-template-columns:.75fr 1fr;gap:24px}
-  .intro-inner>p:last-child{grid-column:2;max-width:410px}
   .tool-row{grid-template-columns:38px minmax(175px,.8fr) 1.2fr 20px;gap:20px}
   .tool-title h3{font-size:20px}
   .how-inner{gap:48px}
@@ -304,19 +267,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
   .visual-caption{right:9px;bottom:49px;left:9px;max-width:calc(100% - 18px);padding:7px 9px;font-size:8px}
   .video-music-toggle{right:9px;bottom:9px}
   .hero-meta{width:100%;padding-top:9px;font-size:8px;letter-spacing:.08em}
-  .editorial-inner{grid-template-columns:minmax(0,1fr);gap:18px;padding-block:54px}
-  .editorial-main .eyebrow{margin-bottom:14px}
-  .editorial-main h2{font-size:clamp(40px,12.8vw,84px);line-height:.92}
-  .editorial-tagline{margin-top:14px;font-size:16px}
-  .rhythm-art{width:min(100%,460px);justify-self:center;margin-block:3px}
-  .editorial-notes{grid-column:1;grid-template-columns:1fr;margin-top:2px}
-  .editorial-notes article,.editorial-notes article+article{display:grid;grid-template-columns:minmax(118px,.8fr) minmax(0,1.2fr);align-items:baseline;gap:12px;padding:12px 0;border-left:0}
-  .editorial-notes article+article{border-top:1px solid #d6dbd0}
-  .editorial-notes h3{font-size:11px}
-  .editorial-notes p{font-size:12px}
-  .intro-inner{grid-template-columns:1fr;gap:12px;padding-block:46px}
-  .intro-inner h2{font-size:31px}
-  .intro-inner>p:last-child{grid-column:auto;max-width:430px;font-size:10px}
   .experience-section{padding-block:70px 74px}
   .experience-collage{gap:8px;padding:8px;border-radius:8px}
   .experience-gallery-row{grid-template-columns:1fr;gap:8px}
@@ -373,5 +323,4 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .reveal{opacity:1;transform:none}
-  .rhythm-art path,.rhythm-art circle{animation:none!important;stroke-dashoffset:0!important;opacity:1!important}
 }
