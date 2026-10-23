@@ -37,9 +37,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
 .menu-toggle{display:none}
 
 /* Hero */
-.hero{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);grid-template-rows:1fr auto auto;align-items:center;column-gap:clamp(38px,6vw,82px);padding:58px 0 76px}
+.hero{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);grid-template-rows:auto 1fr auto;align-items:center;column-gap:clamp(38px,6vw,82px);padding:58px 0 76px}
 .hero::before{position:absolute;z-index:-1;top:2%;right:-6%;width:73%;height:95%;background:radial-gradient(ellipse at 58% 48%,#e8eee3 0%,#faf9f5 61%,transparent 80%);filter:blur(16px);opacity:.82;pointer-events:none;content:""}
-.hero-copy{grid-column:1;grid-row:1;width:100%;max-width:520px;margin:0;text-align:left}
+.hero-copy{grid-column:1;grid-row:2;width:100%;max-width:520px;margin:0;text-align:left}
 .eyebrow{margin:0 0 20px;color:var(--muted);font-size:var(--type-label);font-weight:600;letter-spacing:.14em;line-height:1.5}
 .eyebrow-dot,.status-dot{display:inline-block;width:6px;height:6px;margin:0 8px 1px 0;border-radius:50%;background:#788b6c}
 .hero h1{margin:0;font-size:var(--type-hero);font-weight:600;line-height:var(--leading-display);letter-spacing:-.075em}
@@ -58,7 +58,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
 .button-secondary{border-color:#dcddd5;background:transparent;color:#42463f}
 .button-secondary:hover{border-color:#c5c9bd;background:#fff}
 .hero-note{margin:12px 0 0;color:#646b60;font-size:11px}
-.hero-visual{position:relative;grid-column:2;grid-row:1;width:100%;min-width:0;margin:0;overflow:hidden;aspect-ratio:16/10;border:1px solid #161616;border-radius:10px;background:#000;box-shadow:0 26px 65px #17201420}
+.hero-visual{position:relative;grid-column:2;grid-row:2;width:100%;min-width:0;margin:0;overflow:hidden;aspect-ratio:16/10;border:1px solid #161616;border-radius:10px;background:#000;box-shadow:0 26px 65px #17201420}
 .hero-visual .showcase-video{display:block;width:100%;height:100%;object-fit:cover;object-position:left center;transform:scale(1.14);transform-origin:left center}
 .video-music-toggle{position:absolute;right:14px;bottom:14px;z-index:3;display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #ffffff38;border-radius:999px;background:#121714c9;color:#f1f2ed;font-size:9px;line-height:1;backdrop-filter:blur(10px);cursor:pointer;transition:background .2s ease,border-color .2s ease}
 .video-music-toggle:hover{border-color:#ffffff70;background:#222a24e8}
@@ -66,15 +66,15 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
 .visual-caption{bottom:52px}
 .visual-caption{position:absolute;right:14px;bottom:14px;left:14px;z-index:3;width:max-content;max-width:calc(100% - 28px);padding:9px 12px;border:1px solid #ffffff28;border-radius:4px;background:#121714b8;color:#f1f2ed;font-size:11px;line-height:1.4;backdrop-filter:blur(12px)}
 .visual-caption .status-dot,.experience-caption .status-dot{width:5px;height:5px;background:#aebd9e}
-.hero-meta{display:flex;grid-column:2;grid-row:2;width:100%;justify-content:space-between;gap:16px;padding:12px 1px 0;color:#62695f;font-size:10px;font-weight:500;letter-spacing:.11em}
-.hero-brandline{position:relative;grid-column:1/-1;grid-row:3;width:100%;margin:38px 0 0;padding:24px 0 0;border-top:1px solid #dfe2d9;font-size:clamp(48px,7.2vw,82px);font-weight:600;line-height:.96;letter-spacing:-.075em;white-space:nowrap}
-.hero-brandline span{display:inline-block;opacity:0;transform:translateY(20px);transition:opacity .72s ease,transform .72s cubic-bezier(.2,.72,.2,1);transition-delay:var(--word-delay,0ms)}
+.hero-meta{display:flex;grid-column:2;grid-row:3;width:100%;justify-content:space-between;gap:16px;padding:12px 1px 0;color:#62695f;font-size:10px;font-weight:500;letter-spacing:.11em}
+.hero-brandline{position:relative;grid-column:1/-1;grid-row:1;width:100%;margin:0 0 38px;padding:0 0 20px;border-bottom:1px solid #dfe2d9;font-size:clamp(48px,7.2vw,82px);font-weight:600;line-height:.96;letter-spacing:-.075em;white-space:nowrap}
+.hero-brandline span{display:inline-block;opacity:0;filter:blur(3px);transform:translateY(18px);transition:opacity .82s ease,filter .82s ease,transform .82s cubic-bezier(.18,.72,.2,1);transition-delay:var(--word-delay,0ms)}
 .hero-brandline .brandline-accent{color:var(--green)}
-.hero-brandline.visible span{opacity:1;transform:translateY(0)}
+.hero-brandline.visible span{opacity:1;filter:blur(0);transform:translateY(0)}
 .hero-brandline span:nth-child(1){--word-delay:0ms}
 .hero-brandline span:nth-child(2){--word-delay:130ms}
 .hero-brandline span:nth-child(3){--word-delay:260ms}
-.hero-brandline::after{position:absolute;right:0;bottom:-9px;left:0;height:1px;background:linear-gradient(90deg,var(--green) 0%,#71856d 48%,transparent 78%);transform:scaleX(0);transform-origin:left;transition:transform .85s cubic-bezier(.2,.72,.2,1);transition-delay:480ms;content:""}
+.hero-brandline::after{position:absolute;right:0;bottom:-1px;left:0;height:1px;background:linear-gradient(90deg,var(--green) 0%,#71856d 48%,transparent 78%);transform:scaleX(0);transform-origin:left;transition:transform .9s cubic-bezier(.2,.72,.2,1);transition-delay:520ms;content:""}
 .hero-brandline.visible::after{transform:scaleX(1)}
 
 /* Product video */
@@ -244,9 +244,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
   .site-header nav{gap:18px}
   .hero{display:flex;flex-direction:column;align-items:center;padding-block:63px 70px}
   .hero-copy{max-width:720px;margin-bottom:30px;text-align:center}
-  .hero-brandline{order:1;margin:0 0 24px;padding:0 0 15px;text-align:center;font-size:clamp(42px,7vw,68px)}
-  .hero-visual{order:2}
-  .hero-meta{order:3}
+  .hero-brandline{order:1;margin:0 0 28px;padding:0 0 15px;text-align:center;font-size:clamp(42px,7vw,68px)}
+  .hero-copy{order:2}
+  .hero-visual{order:3}
+  .hero-meta{order:4}
   .hero h1{font-size:clamp(50px,6.2vw,64px)}
   .hero-visual{aspect-ratio:16/10}
   .tool-row{grid-template-columns:38px minmax(175px,.8fr) 1.2fr 20px;gap:20px}
