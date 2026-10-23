@@ -320,7 +320,7 @@ function renderTableBody(){
 
     const tr=document.createElement('tr');
 
-    tr.innerHTML=`<td class="nm"><div class="hn"><span title="${esc(h.title)}"><em>${esc(h.emoji)}</em>&nbsp; ${esc(h.title)}</span><button aria-label="Move ${esc(h.title)} up" title="Move up" ${trackerState.habits.indexOf(h)===0?'disabled':''} onclick="reorderHabit('${h.id}',-1)">↑</button><button aria-label="Move ${esc(h.title)} down" title="Move down" ${trackerState.habits.indexOf(h)===trackerState.habits.length-1?'disabled':''} onclick="reorderHabit('${h.id}',1)">↓</button><button aria-label="Edit ${esc(h.title)}" title="Edit habit" onclick="editHabit('${h.id}')">✎</button><button aria-label="Archive ${esc(h.title)}" title="Archive habit" onclick="archiveHabit('${h.id}')">⇩</button><button aria-label="Delete ${esc(h.title)}" title="Delete habit" onclick="deleteHabit('${h.id}')">&times;</button></div></td>`;
+    tr.innerHTML=`<td class="nm"><div class="hn"><span><em>${esc(h.emoji)}</em>&nbsp; ${esc(h.title)}</span><details class="habit-actions"><summary aria-label="Options for ${esc(h.title)}" title="Habit options">···</summary><div class="habit-action-menu" role="group" aria-label="Options for ${esc(h.title)}"><button type="button" ${trackerState.habits.indexOf(h)===0?'disabled':''} onclick="reorderHabit('${h.id}',-1)">Move up</button><button type="button" ${trackerState.habits.indexOf(h)===trackerState.habits.length-1?'disabled':''} onclick="reorderHabit('${h.id}',1)">Move down</button><button type="button" onclick="editHabit('${h.id}')">Edit habit</button><button type="button" onclick="archiveHabit('${h.id}')">Archive habit</button><button type="button" class="danger" onclick="deleteHabit('${h.id}')">Delete habit</button></div></details></div></td>`;
 
     for(let d=1;d<=31;d++){
 
@@ -580,7 +580,7 @@ function toggleNotes(e){
 
 document.addEventListener('click',e=>{const p=$('notePop');if(p.classList.contains('open')&&!e.target.closest('.notewrap'))toggleNotes()});
 
-document.addEventListener('click',e=>{if(!$('calendarPop').hidden&&!e.target.closest('.calendar-wrap'))closeCalendar();const menu=document.querySelector('.more-menu');if(menu.open&&!e.target.closest('.more-menu'))closeMoreMenu(false)});
+document.addEventListener('click',e=>{if(!$('calendarPop').hidden&&!e.target.closest('.calendar-wrap'))closeCalendar();const menu=document.querySelector('.more-menu');if(menu.open&&!e.target.closest('.more-menu'))closeMoreMenu(false);if(!e.target.closest('.habit-actions'))document.querySelectorAll('.habit-actions[open]').forEach(item=>{item.open=false})});
 
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&$('accountModal').classList.contains('open')){e.preventDefault();closeAccountDialog();return}
