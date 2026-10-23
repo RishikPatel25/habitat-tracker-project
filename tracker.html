@@ -62,7 +62,7 @@ try {
           <div class="more-pop" role="group" aria-label="More dashboard actions">
             <div class="more-group"><h2>Sync status</h2><span class="cloud-indicator" id="cloudSyncIndicator" role="status" aria-label="Local only" title="Local only">Local only</span></div>
             <div class="more-group"><h2>Appearance</h2><button class="more-item" id="themeToggleBtn" type="button" onclick="toggleTheme();closeMoreMenu()">Switch to dark mode</button></div>
-            <div class="more-group"><h2>Other tools</h2><button class="more-item" type="button" onclick="exportAppData();closeMoreMenu()" title="Export your saved habits and logs">Export data</button><button class="more-item" type="button" onclick="closeMoreMenu();openImportPicker()" title="Import a Ritual Habit backup">Import data</button><button class="more-item" type="button" onclick="closeMoreMenu();restoreHabit()" aria-label="Restore archived habit">Archived habits</button></div>
+            <div class="more-group"><h2>Backup & archive</h2><button class="more-item" type="button" onclick="exportAppData();closeMoreMenu()" title="Export your saved habits and logs">Export data</button><button class="more-item" type="button" onclick="closeMoreMenu();openImportPicker()" title="Import a Ritual Habit backup">Import backup</button><button class="more-item" type="button" onclick="closeMoreMenu();restoreHabit()" aria-label="Restore archived habit">Archived habits</button></div>
           </div>
         </details>
         <button class="profile-trigger" id="accountBtn" type="button" onclick="openAccountDialog()" aria-label="Sign in to your account" aria-haspopup="dialog" aria-expanded="false"><span class="profile-avatar" id="profileAvatar" aria-hidden="true">U</span><span class="profile-label" id="profileLabel">Sign in</span></button>
@@ -73,11 +73,11 @@ try {
   <div class="top">
     <section class="box pad">
       <div class="row"><h2>Daily progress</h2><span class="sub"><i class="lg b"></i>Done<i class="lg b" style="margin-left:8px;opacity:.38"></i>Planned<i class="lg l" style="margin-left:12px"></i>7-day average<span id="avgDailyRate" style="margin-left:18px">Avg 0%</span></span></div>
-      <div class="cv"><canvas id="dailyChart"></canvas></div>
+      <div class="cv"><canvas id="dailyChart"></canvas><div class="chart-empty-state" id="dailyChartEmpty" hidden><strong>Daily progress</strong><span>See your completion rate for each day.</span></div></div>
     </section>
     <section class="box pad">
       <div class="row"><h2>Weekly progress</h2><span class="sub">* includes planned</span></div>
-      <div class="cv"><canvas id="weeklyChart"></canvas></div>
+      <div class="cv"><canvas id="weeklyChart"></canvas><div class="chart-empty-state" id="weeklyChartEmpty" hidden><strong>Weekly progress</strong><span>Compare your habit completion week by week.</span></div></div>
     </section>
     <section class="box pad glass">
       <div class="row"><h2>Overall</h2><span class="sub">Month projection</span></div>
@@ -103,6 +103,7 @@ try {
         </thead>
         <tbody id="habitsTableBody"></tbody>
       </table>
+      <div class="empty-habits-state" id="emptyHabitsState" role="status" hidden><div class="empty-habits-content"><span class="empty-habits-mark" aria-hidden="true">＋</span><h3>Start with one small habit</h3><p>Add your first habit to begin filling in your monthly tracker and progress charts.</p><button class="btn pri" type="button" onclick="focusAdd()">Add your first habit</button></div></div>
     </div>
     <div class="metrics">
       <div class="mgrid"><span class="lb">Mood (tap)</span><span id="moodRow" style="display:contents"></span><span class="av" id="moodAvg"></span></div>

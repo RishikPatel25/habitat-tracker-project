@@ -349,7 +349,7 @@ function renderTableBody(){
 
   });
 
-  if(!trackerState.habits.length){const tr=document.createElement('tr');tr.innerHTML='<td colspan="34" class="sub" style="text-align:left;padding:16px">No habits yet. Add one below to start tracking. Your tracker will stay empty until you choose a habit.</td>';tb.appendChild(tr)}
+  $('emptyHabitsState').hidden=trackerState.habits.length>0;
 
 }
 
@@ -433,6 +433,7 @@ function recalculateStatsAndCharts(){
 
   $('avgDailyRate').textContent='Avg '+Math.round(a.averageDailyRate)+'%';$('statStreak').textContent=a.currentStreak+'d';$('statStreak').title='Longest current streak among active habits';
 
+  const noHabits=trackerState.habits.length===0;$('dailyChartEmpty').hidden=!noHabits;$('weeklyChartEmpty').hidden=!noHabits;
   charts?.update({dailyBars:a.dailyBars,dailyAverage:a.dailyAverage,dailyDone:a.dailyDone,dailyGoal:a.dailyGoal,dailyPlannedDone:a.dailyPlannedDone,dailyPlannedGoal:a.dailyPlannedGoal,plannedDays:a.plannedDays,weekly:a.weekly,overallPercent:a.overallPercent});renderAnalysisTable(a.habitStats);renderGoalFeatures();
 
 }
