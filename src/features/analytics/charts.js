@@ -5,7 +5,7 @@ export function createCharts({ css, warn }) {
     id: 'pct',
     afterDatasetsDraw(chart) {
       const { ctx } = chart;
-      ctx.save(); ctx.font = '400 10.5px Hanken Grotesk'; ctx.textAlign = 'center';
+      ctx.save(); ctx.font = '400 11px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'; ctx.textAlign = 'center';
       chart.getDatasetMeta(1).data.forEach((bar, index) => {
         const value = chart.data.datasets[1].data[index], info = chart.weekInfo?.[index];
         const label = value == null ? '–' : `${Math.round(value)}%${info?.includesPlan ? '*' : ''}`;
@@ -39,9 +39,9 @@ export function createCharts({ css, warn }) {
     if (canvases.some((canvas) => !canvas)) { warn('Charts could not start because a dashboard chart element is missing.'); return false; }
     const text = css('--text-primary'), accent = css('--accent'), muted = css('--text-secondary');
     const line = css('--chart-grid'), surface = css('--surface'), rgb = css('--rgb');
-    Chart.defaults.color = muted; Chart.defaults.font.family = 'Hanken Grotesk';
+    Chart.defaults.color = muted; Chart.defaults.font.family = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
     const tooltip = { backgroundColor: surface, borderColor: text, borderWidth: 1, padding: 9, cornerRadius: 3, displayColors: false, titleColor: text, bodyColor: muted };
-    const yAxis = { min: 0, max: 100, grid: { color: line, drawTicks: false }, border: { display: false }, ticks: { stepSize: 50, padding: 8, font: { size: 10 }, callback: (value) => `${value}%` } };
+    const yAxis = { min: 0, max: 100, grid: { color: line, drawTicks: false }, border: { display: false }, ticks: { stepSize: 50, padding: 8, font: { size: 11 }, callback: (value) => `${value}%` } };
 
     let nextDaily = null, nextWeekly = null, nextDonut = null;
     try {
@@ -61,7 +61,7 @@ export function createCharts({ css, warn }) {
             return stats ? `Done: ${stats.done}/${stats.goal} eligible habits (${displayPercent(item.parsed.y)})` : `Done: ${displayPercent(item.parsed.y)}`;
           },
         } } },
-        scales: { x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 16 } }, y: yAxis },
+        scales: { x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 11 }, maxTicksLimit: 16 } }, y: yAxis },
       },
     });
     nextWeekly = new Chart(canvases[1], {

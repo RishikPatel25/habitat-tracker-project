@@ -2,12 +2,12 @@
 [data-theme=light]{--bg:#f0f2eb;--surf:#fbfcf8;--surface:#fbfcf8;--surface-secondary:#f4f6f0;--glow:rgba(0,0,0,.28);--tx:#25302a;--text-primary:#25302a;--mut:#59675f;--text-secondary:#59675f;--line:#d1d9d1;--border:#d1d9d1;--chart-grid:#d1d9d1;--cell:rgba(37,48,42,.05);--rgb:85,124,102;--inv:#fff;--accent:#557c66;--accent-foreground:#fff;--success:#557c66;--gl-top:rgba(255,255,255,.4);--gl-bot:rgba(255,255,255,0)}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:12px;font-weight:400;color:var(--body-text,var(--tx));background:var(--bg);user-select:none;font-variant-numeric:tabular-nums}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:12px;line-height:1.45;font-weight:400;color:var(--body-text,var(--tx));background:var(--bg);user-select:none;font-variant-numeric:tabular-nums}
 #app{height:100vh;height:100dvh;padding:16px;display:grid;grid-template-rows:auto minmax(150px,27%) minmax(0,1fr) auto;gap:12px;max-width:1800px;margin:auto}
 .box{background:var(--surf);border:1px solid var(--line);border-radius:4px;min-height:0;overflow:hidden;color:var(--text-primary,var(--tx))}
 .pad{padding:12px 14px;display:flex;flex-direction:column;min-height:0}
-h1{font-size:18px;font-weight:300;letter-spacing:-.01em}
-h2{font-size:12px;font-weight:500}
+h1{font-size:18px;line-height:1.25;font-weight:600;letter-spacing:-.02em}
+h2{font-size:12px;line-height:1.35;font-weight:600;letter-spacing:-.01em}
 .sub{color:var(--mut);font-size:11px}
 .row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-shrink:0;margin-bottom:8px}
 .cv{position:relative;flex:1;min-height:0}
@@ -21,8 +21,8 @@ header{display:flex;justify-content:space-between;align-items:center;gap:18px;pa
 .brand h1,.brand .sub{white-space:nowrap}
 .dashboard-brand-mark{display:block;width:44px;height:44px;flex:none;border:1px solid var(--line);border-radius:9px;background:#050607;filter:brightness(1.18) contrast(1.08);object-fit:cover}
 .dashboard-wordmark{display:flex;flex-direction:column;gap:1px;line-height:1;letter-spacing:.2em}
-.dashboard-wordmark strong{font:500 12px/1 Manrope,'Hanken Grotesk',sans-serif}
-.dashboard-wordmark small{padding-left:1px;color:var(--mut);font:400 8px/1 Manrope,'Hanken Grotesk',sans-serif;letter-spacing:.42em}
+.dashboard-wordmark strong{font:500 12px/1 Manrope,sans-serif}
+.dashboard-wordmark small{padding-left:1px;color:var(--mut);font:400 8px/1 Manrope,sans-serif;letter-spacing:.42em}
 .brand .sub{color:var(--body-muted,var(--mut))}
 .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex:1;min-width:0}
 .primary-nav,.header-utilities{display:flex;align-items:center;gap:5px;min-width:0}
@@ -55,7 +55,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:18px;pa
 .calendar-controls{display:grid;grid-template-columns:34px minmax(0,1fr) minmax(0,1.2fr) 34px;gap:6px;align-items:center}
 .calendar-controls select{width:100%;min-width:0;padding:6px 7px}
 .calendar-controls .ic{height:32px}
-select,.btn,.ic{font:inherit;color:var(--tx);background:transparent;border:1px solid var(--line);border-radius:4px;padding:6px 10px;outline:none;cursor:pointer;transition:border-color .15s,background .15s}
+select,.btn,.ic{font:500 12px/1.35 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--tx);background:transparent;border:1px solid var(--line);border-radius:4px;padding:6px 10px;outline:none;cursor:pointer;transition:border-color .15s,background .15s}
 .header-actions select,.header-actions .btn:not(.pri),.header-actions .ic{color:var(--body-text,var(--tx))}
 select option{background:var(--bg);color:var(--body-text,var(--tx))}
 select:hover,.ic:hover,.btn:hover{border-color:var(--tx)}
@@ -72,8 +72,8 @@ select:hover,.ic:hover,.btn:hover{border-color:var(--tx)}
 .tile{padding:8px 10px}
 .tile:nth-child(odd){border-right:1px solid var(--line)}
 .tile:nth-child(-n+2){border-bottom:1px solid var(--line)}
-.tile span{display:block;color:var(--mut);font-size:10.5px;margin-bottom:2px}
-.tile strong{font-size:20px;font-weight:300}
+.tile span{display:block;color:var(--mut);font-size:11px;margin-bottom:2px}
+.tile strong{font-size:20px;font-weight:500;letter-spacing:-.02em}
 .main{display:grid;grid-template-columns:8fr 4fr;gap:12px;min-height:0}
 .col{display:flex;flex-direction:column;gap:12px;min-height:0}
 .scroll{position:relative;overflow:auto;flex:1;min-height:0;scrollbar-width:none}
@@ -81,13 +81,13 @@ select:hover,.ic:hover,.btn:hover{border-color:var(--tx)}
 .empty-habits-content{display:flex;flex-direction:column;align-items:center;gap:9px;width:min(100%,380px);padding:22px 26px;border:1px solid color-mix(in srgb,var(--line) 82%,var(--accent));border-radius:10px;background:color-mix(in srgb,var(--surf) 92%,transparent);box-shadow:0 12px 32px rgba(0,0,0,.1);text-align:center;pointer-events:auto}
 .empty-habits-mark{display:grid;place-items:center;width:32px;height:32px;border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));border-radius:50%;background:rgba(var(--rgb),.08);color:var(--accent);font-size:19px;line-height:1}
 .empty-habits-content h3{font-size:14px;font-weight:500;letter-spacing:-.02em}
-.empty-habits-content p{max-width:300px;color:var(--mut);font-size:10px;line-height:1.5}
+.empty-habits-content p{max-width:300px;color:var(--mut);font-size:11px;line-height:1.5}
 .empty-habits-content .btn{min-height:34px;margin-top:3px;padding-inline:15px}
 .scroll::-webkit-scrollbar{display:none}
 table{border-collapse:collapse;width:100%}
 #habitsTable{table-layout:fixed}
 th,td{padding:0;text-align:center}
-thead th{position:sticky;background:var(--surf);color:var(--mut);font-weight:400;font-size:10.5px;z-index:3}
+thead th{position:sticky;background:var(--surf);color:var(--mut);font-weight:500;font-size:11px;line-height:1.25;z-index:3}
 #hr1 th{top:0;padding:6px 0;border-bottom:1px solid var(--line)}
 #hr2 th{top:27px;padding-top:5px}#hr3 th{top:44px;padding-bottom:6px;color:var(--tx);font-weight:500;border-bottom:1px solid var(--line)}
 .nm{position:sticky;left:0;z-index:4;background:var(--surf);text-align:left!important;width:160px;padding-left:12px!important}
@@ -110,7 +110,7 @@ tr:hover .hn button,.hn button:focus-visible{opacity:1}.hn button:hover{color:va
 .chk:disabled{cursor:not-allowed;opacity:.72;border-color:color-mix(in srgb,var(--mut) 78%,var(--line));background:color-mix(in srgb,var(--surf) 76%,var(--line));box-shadow:none}
 .mgrid{display:grid;grid-template-columns:160px repeat(31,minmax(16px,1fr)) 76px;min-width:732px;align-items:center;height:27px}
 .mgrid .lb{position:sticky;left:0;z-index:4;padding-left:12px;color:var(--mut);font-size:11px;background:var(--surf)}
-.mgrid input{width:100%;min-width:0;height:21px;text-align:center;font:inherit;font-size:10.5px;color:var(--tx);background:transparent;border:0;border-radius:3px;outline:none}
+.mgrid input{width:100%;min-width:0;height:21px;text-align:center;font:inherit;font-size:11px;font-weight:500;color:var(--tx);background:transparent;border:0;border-radius:3px;outline:none}
 .mgrid input:focus{box-shadow:0 0 0 1px var(--tx)}
 .mgrid i{display:block}
 .an{font-size:11px}.an thead th{top:0;padding:4px 0;text-align:center}.an th:first-child,.an td:first-child{text-align:left}
@@ -435,6 +435,13 @@ html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,
 @keyframes accountFloat{from{transform:translate3d(-5px,-7px,0)}to{transform:translate3d(8px,10px,0)}}
 @media(max-width:600px){#accountModal{padding:12px}#accountModal .account-box{width:calc(100vw - 24px);border-radius:23px}#accountModal .account-content{padding:32px 0 25px}}
 @media(prefers-reduced-motion:reduce){#accountModal .account-ambient-wrap{display:none}#accountModal .account-orbit{animation:none}}
+#accountModal .account-box,#accountModal .account-box *{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
+#accountModal .account-box button{font-weight:500!important}
+#app .ring b,#app .glass .ring b{font-weight:500}
+#app .glass .tile strong,#app .rk .v strong{font-weight:500}
+#app .account-mark{font-weight:500}
+#app .account-content h2{font-weight:600}
+#app .btn,#app .ic,#app .chip,#app .more-item,#app .calendar-today,#app .goal-manage-link,#app .goal-link,#app .goal-item-actions button,#app .account-link{font-weight:500}
 
 /* Ritual Habit identity */
 .account-logo{display:block;width:min(218px,62vw);height:auto;margin:0 auto 3px;object-fit:contain;mix-blend-mode:screen}
