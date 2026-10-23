@@ -444,12 +444,12 @@ function renderAnalysisTable(st){
 
     const d=$('d_'+x.id),r=$('r_'+x.id);if(!d)return;
 
-    d.innerHTML=`<span class="done-ratio"><b>${x.actual}</b><span>/ ${x.goal}</span></span><span class="streak-chip" title="Current streak ${x.currentStreak} days; best ${x.bestStreak} days">${x.currentStreak}d</span>`;
+    d.innerHTML=`<b>${x.actual}</b>/${x.goal}<span class="sub" title="Current streak ${x.currentStreak} days; best ${x.bestStreak} days"> · ${x.currentStreak}d</span>`;
     d.title=`${x.actual} completed out of ${x.goal} eligible scheduled day${x.goal===1?'':'s'} through today. Earlier dates before this habit started are excluded.`;
 
     const displayRate=Math.round(x.percentage);
 
-    r.innerHTML=`<span class="bar" role="progressbar" aria-label="To-date completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${displayRate}"><i style="width:${x.percentage}%"></i></span><span class="pc">${x.goal?`${displayRate}%`:'—'}</span>`;
+    r.innerHTML=`<span class="bar"><i style="width:${x.percentage}%"></i></span><span class="pc">${x.goal?`${displayRate}%`:'—'}</span>`;
     r.title=x.goal?`${x.actual}/${x.goal} eligible days completed through today (${displayRate}% to date).`:'No eligible days through today.';
 
   });
