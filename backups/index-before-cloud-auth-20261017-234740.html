@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Habit Tracker</title>
+<script>
+try {
+  const root = document.documentElement;
+  const saved = JSON.parse(localStorage.getItem('ht_theme_settings') || 'null');
+  const legacy = localStorage.getItem('ht_theme');
+  if (['light', 'dark'].includes(saved?.appearance)) root.dataset.theme = saved.appearance;
+  else if (['light', 'dark'].includes(legacy)) root.dataset.theme = legacy;
+  if (['compact', 'comfortable', 'spacious'].includes(saved?.density)) root.dataset.density = saved.density;
+} catch { /* Preferences are applied by the app after startup if storage is unavailable. */ }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200;300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="brand"><h1>Habit Tracker</h1><span class="sub">Consistency wins</span></div>
+    <div class="ctl">
+      <div class="notewrap">
+        <button class="ic notebtn" id="noteBtn" onclick="toggleNotes(event)" title="Notes" aria-label="Notes" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M5 4h14v11l-5 5H5z"/><path d="M14 20v-5h5"/><path d="M8.5 9h7M8.5 12.5h4"/></svg><span class="nbadge" id="noteBadge">0</span></button>
+        <div class="notepop" id="notePop" role="dialog" aria-label="Quick notes">
+          <div class="nphead"><h2>Notes <span class="sub" id="noteCount"></span></h2><button onclick="toggleNotes()" aria-label="Close notes">&times;</button></div>
+          <div class="npadd"><input id="noteInput" maxlength="160" placeholder="Add a quick note..." autocomplete="off" onkeydown="if(event.key==='Enter')addNote()"><button class="btn pri" onclick="addNote()">Add</button></div>
+          <ul class="nplist" id="noteList"></ul>
+        </div>
+      </div>
+      <button class="ic" onclick="shiftMonth(-1)" aria-label="Previous month" title="Previous month">‹</button>
+      <select id="yearSelect" onchange="updateCalendar()" aria-label="Year"></select>
+      <select id="monthSelect" onchange="updateCalendar()" aria-label="Month">
+        <option value="0">Jan</option><option value="1">Feb</option><option value="2" selected>Mar</option><option value="3">Apr</option><option value="4">May</option><option value="5">Jun</option><option value="6">Jul</option><option value="7">Aug</option><option value="8">Sep</option><option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option>
+      </select>
+      <button class="ic" onclick="shiftMonth(1)" aria-label="Next month" title="Next month">›</button>
+      <button class="ic" onclick="toggleTheme()" title="Switch theme" aria-label="Switch theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+      <button class="btn" id="customizeThemeBtn" onclick="openThemeSettings()" aria-haspopup="dialog" aria-controls="themeModal">Customize</button>
+      <button class="btn" onclick="goToday()">Today</button>
+      <button class="btn" id="downloadReportsBtn" type="button" onclick="openDownloadReports()" aria-haspopup="dialog" aria-controls="downloadReportsModal">Download reports</button>
+      <button class="btn" type="button" onclick="exportAppData()" title="Export your saved habits and logs">Export data</button>
+      <button class="btn" type="button" onclick="openImportPicker()" title="Import a Habit Tracker backup">Import data</button>
+      <input id="importDataInput" type="file" accept="application/json,.json" hidden>
+      <button class="btn" id="focusModeBtn" type="button" onclick="toggleFocusMode()" aria-label="Toggle Focus mode" aria-pressed="false" title="Focus mode shortcut: F">Focus</button>
+      <button class="btn" onclick="restoreHabit()" aria-label="Restore archived habit">Archived</button>
+      <button class="btn pri" onclick="focusAdd()">Add habit</button>
+    </div>
+  </header>
+
+  <div class="top">
+    <section class="box pad">
+      <div class="row"><h2>Daily progress</h2><span class="sub"><i class="lg b"></i>Done<i class="lg b" style="margin-left:8px;opacity:.38"></i>Planned<i class="lg l" style="margin-left:12px"></i>7-day average<span id="avgDailyRate" style="margin-left:18px">Avg 0%</span></span></div>
+      <div class="cv"><canvas id="dailyChart"></canvas></div>
+    </section>
+    <section class="box pad">
+      <div class="row"><h2>Weekly progress</h2><span class="sub">* includes planned</span></div>
+      <div class="cv"><canvas id="weeklyChart"></canvas></div>
+    </section>
+    <section class="box pad glass">
+      <div class="row"><h2>Overall</h2><span class="sub">Month projection</span></div>
+      <div class="sumwrap">
+        <div class="ring"><canvas id="donutChart"></canvas><div class="rc"><b id="donutPercent">0%</b><small id="donutSub"></small></div></div>
+        <div class="tiles">
+          <div class="tile"><span>Month goal</span><strong id="statGoal">0</strong></div>
+          <div class="tile"><span>Done</span><strong id="statCompleted">0</strong></div>
+          <div class="tile"><span>Left</span><strong id="statLeft">0</strong></div>
+          <div class="tile"><span>Streak</span><strong id="statStreak">0d</strong></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="box panel">
+    <div class="scroll">
+      <table id="habitsTable">
+        <colgroup><col style="width:160px"><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col style="width:78px"><col style="width:122px"></colgroup>
+        <thead>
+          <tr id="hr1"><th class="nm">Habits</th><th colspan="31" class="wk">Weeks</th><th colspan="2" class="wk">This month</th></tr>
+          <tr id="hr2"></tr><tr id="hr3"></tr>
+        </thead>
+        <tbody id="habitsTableBody"></tbody>
+      </table>
+    </div>
+    <div class="metrics">
+      <div class="mgrid"><span class="lb">Mood (tap)</span><span id="moodRow" style="display:contents"></span><span class="av" id="moodAvg"></span></div>
+      <div class="mgrid"><span class="lb">Sleep hrs</span><span id="sleepRow" style="display:contents"></span><span class="av" id="sleepAvg"></span></div>
+    </div>
+    <div class="addbar">
+      <label class="addfield" for="addInput">
+        <span class="plus">+</span>
+        <input id="addInput" placeholder="Add a new habit, e.g. Meditate for 10 minutes" autocomplete="off" onkeydown="if(event.key==='Enter')submitAdd()">
+        <span class="sub hint">or paste a list to add many</span>
+        <kbd>Enter</kbd>
+      </label>
+      <button class="btn pri addbtn" onclick="submitAdd()">Add habit</button>
+      <span class="sub qa">Quick add</span>
+      <div class="chips" id="chips"></div>
+    </div>
+  </section>
+
+  <section class="box rank">
+    <div class="rl"><h2>Highlights</h2><span class="sub">This month</span></div>
+    <ol id="topHabitsList" class="rk"></ol>
+  </section>
+</div>
+
+<div class="modal" id="downloadReportsModal" role="dialog" aria-modal="true" aria-labelledby="downloadReportsTitle" aria-hidden="true" onclick="if(event.target===this)closeDownloadReports()">
+  <section class="box download-reports-box">
+    <div class="row"><h2 id="downloadReportsTitle">Download monthly report</h2><button class="btn" type="button" onclick="closeDownloadReports()" aria-label="Close download options">Close</button></div>
+    <p class="sub download-reports-hint">Choose a format for the selected month.</p>
+    <div class="download-report-options">
+      <button class="btn pri" type="button" onclick="downloadMonthlyPdf()">Download PDF</button>
+      <button class="btn" type="button" onclick="downloadMonthlyPng()">Download PNG</button>
+      <button class="btn" type="button" onclick="downloadMonthlyCsv()">Download CSV</button>
+      <button class="btn" type="button" onclick="downloadMonthlyReport()">Download HTML report</button>
+    </div>
+  </section>
+</div>
+
+<div class="modal theme-modal" id="themeModal" role="dialog" aria-modal="true" aria-labelledby="themeTitle" aria-hidden="true" onclick="if(event.target===this)closeThemeSettings()">
+  <section class="box">
+    <div class="theme-head"><div><h2 class="theme-title" id="themeTitle">Customize your workspace</h2><p class="sub" style="margin-top:4px">Personalize the dashboard colors and spacing.</p></div><button class="ic" onclick="closeThemeSettings()" aria-label="Close theme settings">&times;</button></div>
+    <div class="theme-form">
+      <div class="theme-field"><label for="themePreset">Theme preset</label><select id="themePreset"><option value="midnight">Midnight</option><option value="obsidian">Obsidian Black</option><option value="clean-light">Clean Light</option><option value="violet">Violet</option><option value="sage">Sage</option></select></div>
+      <div class="theme-field"><label for="themeAppearance">Appearance</label><select id="themeAppearance"><option value="dark">Dark</option><option value="light">Light</option></select></div>
+      <div class="theme-field full"><span>Accent color</span><div class="swatches" id="themeSwatches" aria-label="Curated accent colors"></div></div>
+      <div class="theme-colors theme-field full">
+        <div class="theme-field"><label for="themeAccent">Custom accent</label><input id="themeAccent" type="color" value="#d9dee8"></div>
+        <div class="theme-field"><label for="themeBackground">Background color</label><input id="themeBackground" type="color" value="#080a0f"></div>
+        <div class="theme-field"><label for="themeSurface">Panel color</label><input id="themeSurface" type="color" value="#11151c"></div>
+        <div class="theme-field"><label for="themeDensity">Interface density</label><select id="themeDensity"><option value="compact">Compact</option><option value="comfortable">Comfortable</option><option value="spacious">Spacious</option></select></div>
+      </div>
+      <div class="theme-field full"><span>Live preview</span><div class="theme-preview"><div><strong>Daily focus</strong><div class="sample-bar" aria-label="Sample progress, 68 percent"><i></i></div></div><input class="sample-check" type="checkbox" checked aria-label="Sample completed habit"></div></div>
+    </div>
+    <div class="theme-actions"><button class="btn" onclick="resetThemeDraft()">Reset to default</button><div class="right"><button class="btn" onclick="closeThemeSettings()">Cancel</button><button class="btn pri" onclick="saveThemeSettings()">Save changes</button></div></div>
+  </section>
+</div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

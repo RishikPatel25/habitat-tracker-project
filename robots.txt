@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /runtime-config.json
+
+Sitemap: https://YOUR_PRODUCTION_DOMAIN/sitemap.xml

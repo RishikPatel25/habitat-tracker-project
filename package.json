@@ -1,0 +1,11 @@
+{
+  "name": "habitat-habit-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-pages.js",
+    "start": "node server.js",
+    "test": "node --test tests/*.test.js"
+  }
+}

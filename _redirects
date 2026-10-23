@@ -1,0 +1,6 @@
+/app /tracker.html 200
+/app/ /tracker.html 200
+/dashboard /tracker.html 200
+/dashboard/ /tracker.html 200
+/signin /tracker.html 200
+/signin/ /tracker.html 200
