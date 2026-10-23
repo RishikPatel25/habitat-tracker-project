@@ -1,4 +1,5 @@
 {
+  "outputDirectory": "dist",
   "rewrites": [
     { "source": "/runtime-config.json", "destination": "/api/runtime-config" },
     { "source": "/app", "destination": "/tracker.html" },
