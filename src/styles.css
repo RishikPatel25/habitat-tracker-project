@@ -381,8 +381,8 @@ html[data-density=spacious]{--density-row:37px;--density-gap:16px}
 .glass-switch input:focus-visible+.glass-switch-track{outline:2px solid var(--accent);outline-offset:3px}
 .glass-switch input:checked~.glass-switch-state{color:var(--accent)}
 
-html[data-glass=true]{--accent:#b8d8ff!important;--accent-foreground:#101722!important;--success:#8fb9e8!important;--rgb:184,216,255!important;--glow:rgba(150,196,255,.3)!important;--cell:rgba(198,220,255,.055)!important;--glass-surface:rgba(20,29,42,.46);--glass-floating:rgba(17,26,39,.34);--glass-edge:rgba(226,238,255,.15);--glass-edge-bright:rgba(244,249,255,.25);--glass-shadow:0 18px 48px rgba(0,0,0,.24);--glass-blur:26px}
-html[data-glass=true] body{background:radial-gradient(ellipse 54% 54% at 12% 12%,rgba(36,105,123,.22),transparent 72%),radial-gradient(ellipse 58% 64% at 84% 3%,rgba(66,91,151,.21),transparent 70%),radial-gradient(ellipse 56% 68% at 58% 94%,rgba(96,62,81,.14),transparent 72%),#070a10}
+html[data-glass=true]{--accent:#b8d8ff!important;--accent-foreground:#101722!important;--success:#8fb9e8!important;--rgb:184,216,255!important;--glow:rgba(150,196,255,.3)!important;--cell:rgba(198,220,255,.055)!important;--glass-surface:rgba(16,25,38,.16);--glass-floating:rgba(17,26,39,.14);--glass-edge:rgba(238,245,255,.14);--glass-edge-bright:rgba(248,251,255,.25);--glass-shadow:0 18px 48px rgba(0,0,0,.22);--glass-blur:30px}
+html[data-glass=true] body{background:radial-gradient(ellipse 56% 62% at 10% 18%,rgba(27,114,132,.29),transparent 72%),radial-gradient(ellipse 60% 64% at 84% 5%,rgba(66,91,151,.28),transparent 70%),radial-gradient(ellipse 56% 68% at 63% 93%,rgba(122,79,85,.2),transparent 72%),linear-gradient(180deg,rgba(4,8,14,.28),rgba(4,8,14,.52)),url('/src/assets/glass-ambient.jpg') center/cover fixed no-repeat,#070a10}
 html[data-glass=true] #app{isolation:isolate}
 html[data-glass=true] #app>header{padding:7px 9px;border:1px solid rgba(226,238,255,.09);border-radius:10px;background:linear-gradient(110deg,rgba(219,235,255,.055),rgba(16,25,38,.19));-webkit-backdrop-filter:blur(18px) saturate(135%);backdrop-filter:blur(18px) saturate(135%);box-shadow:inset 0 1px 0 rgba(244,249,255,.1),0 8px 24px rgba(0,0,0,.12)}
 html[data-glass=true] #app>.top>.box,
@@ -402,7 +402,7 @@ html[data-glass=true] .calendar-pop .ic,
 html[data-glass=true] .goal-list li,
 html[data-glass=true] .download-report-options .btn,
 html[data-glass=true] .account-help{
-  background:linear-gradient(132deg,rgba(237,245,255,.105) 0%,rgba(174,202,239,.045) 34%,rgba(9,16,26,.24) 100%),radial-gradient(ellipse at 4% 0%,rgba(114,198,210,.10),transparent 48%),var(--glass-surface);
+  background:linear-gradient(132deg,rgba(237,245,255,.075) 0%,rgba(174,202,239,.025) 34%,rgba(9,16,26,.12) 100%),radial-gradient(ellipse at 4% 0%,rgba(114,198,210,.075),transparent 48%),var(--glass-surface);
   border-color:var(--glass-edge);
   -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(145%);
   backdrop-filter:blur(var(--glass-blur)) saturate(145%);
