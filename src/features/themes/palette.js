@@ -1,4 +1,4 @@
-export const THEME_DEFAULT = { preset: 'sage', appearance: 'light', accent: '#557c66', background: '#f0f2eb', surface: '#fbfcf8', density: 'comfortable' };
+export const THEME_DEFAULT = { preset: 'obsidian', appearance: 'dark', accent: '#557c66', background: '#000000', surface: '#080808', density: 'comfortable' };
 export const THEME_PALETTES = {
   midnight: { dark: ['#080a0f', '#11151c', '#f2f4f8', '#a4aab5', '#303640', '#d9dee8'], light: ['#f1f2f4', '#ffffff', '#20252c', '#5b6470', '#d9dde2', '#596575'] },
   obsidian: { dark: ['#000000', '#080808', '#f5f5f5', '#a6a6a6', '#262626', '#e5e7eb'], light: ['#f1f1f1', '#ffffff', '#202020', '#5b5b5b', '#d5d5d5', '#303030'] },
@@ -13,7 +13,7 @@ export function validHex(value) { return typeof value === 'string' && /^#[0-9a-f
 export function normalizeTheme(raw, legacy) {
   const source = raw && typeof raw === 'object' ? raw : {};
   const theme = { ...THEME_DEFAULT, ...source };
-  if (!THEME_PALETTES[theme.preset]) theme.preset = 'midnight';
+  if (!THEME_PALETTES[theme.preset]) theme.preset = THEME_DEFAULT.preset;
   if (!['light', 'dark'].includes(source.appearance)) theme.appearance = legacy === 'light' ? 'light' : THEME_DEFAULT.appearance;
   if (!validHex(theme.accent)) theme.accent = THEME_DEFAULT.accent;
   if (!validHex(theme.background) || !validHex(theme.surface)) {

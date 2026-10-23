@@ -3,7 +3,7 @@ const STORAGE_KEYS = {
   sleepData: 'ht_sleep', notes: 'ht_notes', theme: 'ht_theme', themeSettings: 'ht_theme_settings', focusMode: 'ht_focus_mode', schemaVersion: 'ht_schema_version',
 };
 
-const defaults = { habits: [], archivedHabits: [], goals: [], checksData: {}, moodData: {}, sleepData: {}, notes: [], theme: 'light', themeSettings: null, focusMode: false, schemaVersion: 2 };
+const defaults = { habits: [], archivedHabits: [], goals: [], checksData: {}, moodData: {}, sleepData: {}, notes: [], theme: 'dark', themeSettings: null, focusMode: false, schemaVersion: 2 };
 
 function parse(raw, fallback) { try { return raw === null ? fallback : JSON.parse(raw); } catch { return fallback; } }
 
@@ -15,12 +15,14 @@ export function normalizeTrackerSnapshot(value = {}) {
   const snapshot = { ...defaults, ...(value && typeof value === 'object' ? value : {}) };
   for (const key of ['habits', 'archivedHabits', 'goals', 'notes']) if (!Array.isArray(snapshot[key])) snapshot[key] = [];
   for (const key of ['checksData', 'moodData', 'sleepData']) if (!snapshot[key] || typeof snapshot[key] !== 'object' || Array.isArray(snapshot[key])) snapshot[key] = {};
-  if (!['light', 'dark'].includes(snapshot.theme)) snapshot.theme = 'light';
+  if (!['light', 'dark'].includes(snapshot.theme)) snapshot.theme = 'dark';
   if (snapshot.themeSettings !== null && (typeof snapshot.themeSettings !== 'object' || Array.isArray(snapshot.themeSettings))) snapshot.themeSettings = null;
   const theme = snapshot.themeSettings;
-  if (theme?.preset === 'midnight' && theme.appearance === 'dark' && theme.accent?.toLowerCase() === '#d9dee8' && theme.background?.toLowerCase() === '#080a0f' && theme.surface?.toLowerCase() === '#11151c' && theme.density === 'comfortable') {
-    snapshot.themeSettings = { preset: 'sage', appearance: 'light', accent: '#557c66', background: '#f0f2eb', surface: '#fbfcf8', density: 'comfortable' };
-    snapshot.theme = 'light';
+  const oldDarkDefault = theme?.preset === 'midnight' && theme.appearance === 'dark' && theme.accent?.toLowerCase() === '#d9dee8' && theme.background?.toLowerCase() === '#080a0f' && theme.surface?.toLowerCase() === '#11151c' && theme.density === 'comfortable';
+  const oldLightDefault = theme?.preset === 'sage' && theme.appearance === 'light' && theme.accent?.toLowerCase() === '#557c66' && theme.background?.toLowerCase() === '#f0f2eb' && theme.surface?.toLowerCase() === '#fbfcf8' && theme.density === 'comfortable';
+  if (oldDarkDefault || oldLightDefault) {
+    snapshot.themeSettings = { preset: 'obsidian', appearance: 'dark', accent: '#557c66', background: '#000000', surface: '#080808', density: 'comfortable' };
+    snapshot.theme = 'dark';
   }
   snapshot.focusMode = snapshot.focusMode === true;
   snapshot.schemaVersion = 2;
@@ -30,11 +32,11 @@ export function normalizeTrackerSnapshot(value = {}) {
 export function trackerSnapshotHasData(input) {
   const data = normalizeTrackerSnapshot(input);
   const theme = data.themeSettings;
-  const isDefaultTheme = theme && ((theme.preset === 'sage' && theme.appearance === 'light' && theme.density === 'comfortable' && theme.accent?.toLowerCase() === '#557c66' && theme.background?.toLowerCase() === '#f0f2eb' && theme.surface?.toLowerCase() === '#fbfcf8') || (theme.preset === 'midnight' && theme.appearance === 'dark' && theme.density === 'comfortable' && theme.accent?.toLowerCase() === '#d9dee8' && theme.background?.toLowerCase() === '#080a0f' && theme.surface?.toLowerCase() === '#11151c'));
+  const isDefaultTheme = theme && ((theme.preset === 'obsidian' && theme.appearance === 'dark' && theme.density === 'comfortable' && theme.accent?.toLowerCase() === '#557c66' && theme.background?.toLowerCase() === '#000000' && theme.surface?.toLowerCase() === '#080808') || (theme.preset === 'sage' && theme.appearance === 'light' && theme.density === 'comfortable' && theme.accent?.toLowerCase() === '#557c66' && theme.background?.toLowerCase() === '#f0f2eb' && theme.surface?.toLowerCase() === '#fbfcf8') || (theme.preset === 'midnight' && theme.appearance === 'dark' && theme.density === 'comfortable' && theme.accent?.toLowerCase() === '#d9dee8' && theme.background?.toLowerCase() === '#080a0f' && theme.surface?.toLowerCase() === '#11151c'));
   const hasCustomTheme = theme && !isDefaultTheme;
   return !!(data.habits.length || data.archivedHabits.length || data.goals.length || data.notes.length
     || Object.keys(data.checksData).length || Object.keys(data.moodData).length || Object.keys(data.sleepData).length
-    || hasCustomTheme || data.theme !== 'light' || data.focusMode);
+    || hasCustomTheme || data.theme !== 'dark' || data.focusMode);
 }
 
 function mergeCalendarData(local = {}, cloud = {}, { completions = false } = {}) {
@@ -78,7 +80,7 @@ export function mergeTrackerSnapshots(localInput, cloudInput) {
     habits: [...habitsById.values()], archivedHabits: [...archivedById.values()], notes: [...notesById.values()],
     checksData: mergeCalendarData(local.checksData, cloud.checksData, { completions: true }),
     moodData: mergeWellbeingData(local.moodData, cloud.moodData), sleepData: mergeWellbeingData(local.sleepData, cloud.sleepData),
-    theme: cloud.themeSettings || cloud.theme !== 'light' ? cloud.theme : local.theme,
+    theme: cloud.themeSettings || cloud.theme !== 'dark' ? cloud.theme : local.theme,
     themeSettings: cloud.themeSettings || local.themeSettings, focusMode: cloud.focusMode || local.focusMode,
   };
 }
