@@ -35,14 +35,14 @@ const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim
 
 
 
-function applyTheme(t){const root=document.documentElement,p=paletteFor(t),fg=accentForeground(t.accent),rgb=rgbFromHex(t.accent);root.dataset.theme=t.appearance;root.dataset.density=t.density;root.dataset.glass=t.glassMode===true?'true':'false';const themeToggle=$('themeToggleBtn');if(themeToggle)themeToggle.textContent=t.appearance==='dark'?'Switch to light mode':'Switch to dark mode';
+function applyTheme(t){const root=document.documentElement,p=paletteFor(t),fg=accentForeground(t.accent),rgb=rgbFromHex(t.accent);root.dataset.theme=t.appearance;root.dataset.preset=t.preset;root.dataset.density=t.density;const themeToggle=$('themeToggleBtn');if(themeToggle)themeToggle.textContent=t.appearance==='dark'?'Switch to light mode':'Switch to dark mode';
 
   const vars={'--bg':p.background,'--surf':p.surface,'--surface':p.surface,'--surface-secondary':`color-mix(in srgb, ${p.surface} 88%, ${p.text})`,'--tx':p.text,'--text-primary':p.text,'--mut':p.muted,'--text-secondary':p.muted,'--body-text':p.bodyText,'--body-muted':p.bodyMuted,'--line':p.border,'--border':p.border,'--chart-grid':p.border,'--accent':t.accent,'--accent-foreground':fg,'--rgb':rgb,'--inv':fg,'--glow':t.accent,'--success':t.preset==='sage'?'#557c66':'#4d9b75','--cell':`color-mix(in srgb, ${p.text} 5%, transparent)`,'--gl-top':t.appearance==='light'?'rgba(255,255,255,.4)':'rgba(255,255,255,.35)','--gl-bot':t.appearance==='light'?'rgba(255,255,255,0)':'rgba(0,0,0,.26)'};for(const [k,v]of Object.entries(vars))root.style.setProperty(k,v);
 
   // Styling updates do not change the analytics snapshot or recompute habit values.
   if(charts){charts.restyle();renderMentalMetrics()}}
 
-function syncThemeControls(t){$('themePreset').value=t.preset;$('themeAppearance').value=t.appearance;$('themeAccent').value=t.accent;$('themeBackground').value=t.background;$('themeSurface').value=t.surface;$('themeDensity').value=t.density;$('glassModeToggle').checked=t.glassMode===true;$('glassModeToggle').parentElement.querySelector('.glass-switch-state').textContent=t.glassMode?'On':'Off';document.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color.toLowerCase()===t.accent.toLowerCase())))}
+function syncThemeControls(t){$('themePreset').value=t.preset;$('themeAppearance').value=t.appearance;$('themeAccent').value=t.accent;$('themeBackground').value=t.background;$('themeSurface').value=t.surface;$('themeDensity').value=t.density;document.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color.toLowerCase()===t.accent.toLowerCase())))}
 
 function paintThemeDraft(){applyTheme(trackerState.themeDraft);syncThemeControls(trackerState.themeDraft)}
 
@@ -53,8 +53,6 @@ function chooseAppearance(appearance){if(!['light','dark'].includes(appearance))
 function setAccentColor(color){if(!validHex(color))return;trackerState.themeDraft.accent=color;applyTheme(trackerState.themeDraft);document.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color.toLowerCase()===color.toLowerCase())))}
 
 function initThemeControls(){THEME_SWATCHES.forEach(color=>{const b=document.createElement('button');b.type='button';b.className='swatch';b.dataset.color=color;b.style.backgroundColor=color;b.title=`Accent ${color}`;b.setAttribute('aria-label',`Use accent color ${color}`);b.setAttribute('aria-pressed','false');b.onclick=()=>setAccentColor(color);$('themeSwatches').appendChild(b)});
-
-  $('glassModeToggle').onchange=e=>{trackerState.themeDraft.glassMode=e.target.checked;e.target.parentElement.querySelector('.glass-switch-state').textContent=e.target.checked?'On':'Off';applyTheme(trackerState.themeDraft)};
 
   $('themePreset').onchange=e=>chooseThemePreset(e.target.value);$('themeAppearance').onchange=e=>chooseAppearance(e.target.value);$('themeAccent').oninput=e=>setAccentColor(e.target.value);$('themeBackground').oninput=e=>{trackerState.themeDraft.background=e.target.value;applyTheme(trackerState.themeDraft)};$('themeSurface').oninput=e=>{trackerState.themeDraft.surface=e.target.value;applyTheme(trackerState.themeDraft)};$('themeDensity').onchange=e=>{trackerState.themeDraft.density=e.target.value;applyTheme(trackerState.themeDraft)};
 

@@ -369,74 +369,6 @@ html[data-density=spacious]{--density-row:37px;--density-gap:16px}
 .theme-actions .right{display:flex;gap:8px}
 @media(max-width:560px){.theme-form,.theme-colors{grid-template-columns:1fr}.theme-field.full{grid-column:auto}.theme-modal .box{padding:16px}}
 
-/* Optional dashboard glass mode. The default theme remains untouched. */
-.glass-mode-setting{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 13px;border:1px solid var(--line);border-radius:9px;background:var(--surface-secondary)}
-.glass-mode-description{max-width:360px;margin-top:4px;line-height:1.45}
-.glass-switch{display:inline-flex;align-items:center;gap:8px;flex:none;cursor:pointer;color:var(--text-secondary);font-size:11px}
-.glass-switch input{position:absolute;width:1px;height:1px;margin:0;opacity:0;clip-path:inset(50%)}
-.glass-switch-track{position:relative;width:38px;height:22px;border:1px solid var(--border);border-radius:99px;background:var(--surface);transition:background .18s,border-color .18s}
-.glass-switch-track::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--mut);transition:transform .18s,background .18s}
-.glass-switch input:checked+.glass-switch-track{border-color:var(--accent);background:var(--accent)}
-.glass-switch input:checked+.glass-switch-track::after{background:var(--accent-foreground);transform:translateX(16px)}
-.glass-switch input:focus-visible+.glass-switch-track{outline:2px solid var(--accent);outline-offset:3px}
-.glass-switch input:checked~.glass-switch-state{color:var(--accent)}
-
-html[data-glass=true]{--accent:#b8d8ff!important;--accent-foreground:#101722!important;--success:#8fb9e8!important;--rgb:184,216,255!important;--glow:rgba(150,196,255,.3)!important;--cell:rgba(198,220,255,.055)!important;--glass-surface:rgba(16,25,38,.16);--glass-floating:rgba(17,26,39,.14);--glass-edge:rgba(238,245,255,.14);--glass-edge-bright:rgba(248,251,255,.25);--glass-shadow:0 18px 48px rgba(0,0,0,.22);--glass-blur:30px}
-html[data-glass=true] body{background:radial-gradient(ellipse 56% 62% at 10% 18%,rgba(27,114,132,.29),transparent 72%),radial-gradient(ellipse 60% 64% at 84% 5%,rgba(66,91,151,.28),transparent 70%),radial-gradient(ellipse 56% 68% at 63% 93%,rgba(122,79,85,.2),transparent 72%),linear-gradient(180deg,rgba(4,8,14,.28),rgba(4,8,14,.52)),url('/src/assets/glass-ambient.jpg') center/cover fixed no-repeat,#070a10}
-html[data-glass=true] #app{isolation:isolate}
-html[data-glass=true] #app>header{padding:7px 9px;border:1px solid rgba(226,238,255,.09);border-radius:10px;background:linear-gradient(110deg,rgba(219,235,255,.055),rgba(16,25,38,.19));-webkit-backdrop-filter:blur(18px) saturate(135%);backdrop-filter:blur(18px) saturate(135%);box-shadow:inset 0 1px 0 rgba(244,249,255,.1),0 8px 24px rgba(0,0,0,.12)}
-html[data-glass=true] #app>.top>.box,
-html[data-glass=true] #app>.panel,
-html[data-glass=true] #app>.rank,
-html[data-glass=true] header .nav-action,
-html[data-glass=true] header .more-trigger,
-html[data-glass=true] header .profile-trigger,
-html[data-glass=true] .calendar-pop,
-html[data-glass=true] .more-pop,
-html[data-glass=true] .notepop,
-html[data-glass=true] .modal>.box,
-html[data-glass=true] .theme-modal .box,
-html[data-glass=true] .theme-preview,
-html[data-glass=true] .calendar-pop select,
-html[data-glass=true] .calendar-pop .ic,
-html[data-glass=true] .goal-list li,
-html[data-glass=true] .download-report-options .btn,
-html[data-glass=true] .account-help{
-  background:linear-gradient(132deg,rgba(237,245,255,.075) 0%,rgba(174,202,239,.025) 34%,rgba(9,16,26,.12) 100%),radial-gradient(ellipse at 4% 0%,rgba(114,198,210,.075),transparent 48%),var(--glass-surface);
-  border-color:var(--glass-edge);
-  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(145%);
-  backdrop-filter:blur(var(--glass-blur)) saturate(145%);
-  box-shadow:inset 0 1px 0 var(--glass-edge-bright),inset 0 -1px 0 rgba(218,235,255,.035),var(--glass-shadow)
-}
-html[data-glass=true] #app>.top>.box,
-html[data-glass=true] #app>.panel,
-html[data-glass=true] #app>.rank{border-radius:10px}
-html[data-glass=true] header .nav-action,
-html[data-glass=true] header .more-trigger,
-html[data-glass=true] header .profile-trigger{background:linear-gradient(145deg,rgba(232,242,255,.08),rgba(156,185,226,.025)),var(--glass-floating);border-color:rgba(226,238,255,.12);-webkit-backdrop-filter:blur(15px) saturate(140%);backdrop-filter:blur(15px) saturate(140%);box-shadow:inset 0 1px 0 rgba(244,249,255,.11),0 4px 14px rgba(0,0,0,.12)}
-html[data-glass=true] .notepop{background:linear-gradient(145deg,rgba(214,231,255,.1),rgba(10,17,27,.9));border-color:rgba(195,219,255,.2)}
-html[data-glass=true] header .nav-action:hover,
-html[data-glass=true] header .more-trigger:hover,
-html[data-glass=true] .more-item:hover,
-html[data-glass=true] .chip:hover,
-html[data-glass=true] .calendar-today:hover{background-color:rgba(185,216,255,.1);border-color:rgba(205,228,255,.38)}
-html[data-glass=true] .btn.pri{background:linear-gradient(135deg,#c7e1ff,#83b2e8);border-color:rgba(224,239,255,.56);color:#101722;box-shadow:0 3px 16px rgba(113,170,235,.18)}
-html[data-glass=true] .tiles{background:linear-gradient(150deg,rgba(228,240,255,.07),rgba(12,19,30,.24));border-color:rgba(226,238,255,.12);border-radius:9px;-webkit-backdrop-filter:blur(16px) saturate(135%);backdrop-filter:blur(16px) saturate(135%);box-shadow:inset 0 1px 0 rgba(244,249,255,.09),0 8px 24px rgba(0,0,0,.14)}
-html[data-glass=true] .tile:nth-child(odd),html[data-glass=true] .tile:nth-child(-n+2){border-color:rgba(195,219,255,.13)}
-html[data-glass=true] .glass::before{background:radial-gradient(ellipse at 50% 56%,rgba(175,211,255,.1),transparent 62%)}
-html[data-glass=true] .scroll,html[data-glass=true] .metrics,html[data-glass=true] .addbar{background:rgba(7,12,19,.11)}
-html[data-glass=true] thead th,html[data-glass=true] .nm,html[data-glass=true] .mgrid .lb,html[data-glass=true] .mgrid .av{background:rgba(15,23,34,.68);backdrop-filter:blur(18px) saturate(135%)}
-html[data-glass=true] #hr1 th:last-child,html[data-glass=true] #hr2 .month-done-head,html[data-glass=true] #hr2 .month-rate-head{background:rgba(181,211,247,.075)}
-html[data-glass=true] .addfield{border-color:rgba(226,238,255,.14);background:rgba(220,235,255,.045);box-shadow:inset 0 1px 0 rgba(244,249,255,.08)}
-html[data-glass=true] .chk{border-color:rgba(226,238,255,.24)}
-html[data-glass=true] .brand .dashboard-brand-mark{border-color:rgba(226,238,255,.2);box-shadow:inset 0 1px 0 rgba(244,249,255,.12),0 5px 18px rgba(0,0,0,.22)}
-html[data-glass=true] .modal{background:rgba(2,5,9,.68);backdrop-filter:blur(6px)}
-html[data-glass=true] .account-box{border:1px solid rgba(195,219,255,.2);box-shadow:inset 0 1px 0 rgba(240,247,255,.13),0 18px 60px rgba(0,0,0,.55)}
-html[data-glass=true] :focus-visible{outline-color:#c2e0ff}
-@media(max-width:700px){html[data-glass=true]{--glass-blur:16px}html[data-glass=true] #app>.top>.box,html[data-glass=true] #app>.panel,html[data-glass=true] #app>.rank{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){html[data-glass=true]{--glass-surface:rgba(20,29,42,.88);--glass-floating:rgba(17,26,39,.8)}}
-@media(prefers-reduced-motion:reduce){.glass-switch-track,.glass-switch-track::after{transition:none}}
-
 /* Streamlined Customize dialog */
 .theme-modal .box{max-width:520px;padding:20px}
 .theme-head{align-items:center;margin-bottom:15px}
@@ -449,19 +381,27 @@ html[data-glass=true] :focus-visible{outline-color:#c2e0ff}
 .theme-colors{gap:9px 10px}
 .swatches{gap:7px}
 .swatch{width:23px;height:23px}
-.glass-mode-setting{flex-direction:row;align-items:center;min-height:66px;padding:10px 13px;border-radius:7px;background:color-mix(in srgb,var(--surface) 88%,var(--accent) 12%)}
-.glass-mode-description{max-width:390px;margin-top:3px;font-size:10px;line-height:1.4}
-.glass-switch{gap:7px;font-size:10px}
-.glass-switch-track{width:34px;height:20px}
-.glass-switch-track::after{top:2px;left:2px;width:14px;height:14px}
-.glass-switch input:checked+.glass-switch-track::after{transform:translateX(14px)}
 .theme-preview{padding:10px 12px;border-radius:7px}
 .theme-preview strong{font-size:11px;font-weight:500}
 .theme-preview .sample-bar{height:5px;margin-top:5px}
 .theme-preview .sample-check{width:15px;height:15px}
 .theme-actions{margin-top:14px;padding-top:11px}
-html[data-glass=true] .glass-mode-setting{background:linear-gradient(110deg,rgba(195,219,255,.075),rgba(195,219,255,.025));border-color:rgba(195,219,255,.16)}
-@media(max-width:560px){.theme-modal .box{padding:16px}.glass-mode-setting{align-items:flex-start}.glass-mode-description{max-width:260px}.theme-actions{align-items:stretch;flex-wrap:wrap}.theme-actions>.btn{flex:1}.theme-actions .right{flex:1;justify-content:flex-end}}
+@media(max-width:560px){.theme-modal .box{padding:16px}.theme-actions{align-items:stretch;flex-wrap:wrap}.theme-actions>.btn{flex:1}.theme-actions .right{flex:1;justify-content:flex-end}}
+
+/* A subtle glass edge on the default Obsidian workspace. */
+html[data-preset=obsidian][data-theme=dark] body{background:radial-gradient(ellipse 56% 62% at 10% 18%,rgba(27,114,132,.12),transparent 72%),radial-gradient(ellipse 60% 64% at 84% 5%,rgba(66,91,151,.13),transparent 70%),linear-gradient(180deg,rgba(0,0,0,.54),rgba(0,0,0,.68)),url('/src/assets/glass-ambient.jpg') center/cover fixed no-repeat,#000}
+html[data-preset=obsidian][data-theme=dark] #app>.top>.box,
+html[data-preset=obsidian][data-theme=dark] #app>.panel,
+html[data-preset=obsidian][data-theme=dark] #app>.rank{background:rgba(8,8,8,.78);border-color:rgba(235,241,248,.13);box-shadow:inset 0 1px 0 rgba(255,255,255,.075),0 8px 24px rgba(0,0,0,.12);-webkit-backdrop-filter:blur(12px) saturate(115%);backdrop-filter:blur(12px) saturate(115%)}
+html[data-preset=obsidian][data-theme=dark] #app>header{padding:6px 8px;border:1px solid rgba(235,241,248,.09);border-radius:8px;background:rgba(8,8,8,.48);-webkit-backdrop-filter:blur(10px) saturate(112%);backdrop-filter:blur(10px) saturate(112%)}
+html[data-preset=obsidian][data-theme=dark] header .nav-action,
+html[data-preset=obsidian][data-theme=dark] header .more-trigger,
+html[data-preset=obsidian][data-theme=dark] header .profile-trigger{background:rgba(255,255,255,.025);border-color:rgba(235,241,248,.1);backdrop-filter:blur(8px)}
+html[data-preset=obsidian][data-theme=dark] .tiles{background:rgba(255,255,255,.025);border-color:rgba(235,241,248,.11)}
+html[data-preset=obsidian][data-theme=dark] .notepop,
+html[data-preset=obsidian][data-theme=dark] .more-pop,
+html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,15,.92);border-color:rgba(235,241,248,.13);backdrop-filter:blur(14px)}
+@media(max-width:700px){html[data-preset=obsidian][data-theme=dark] #app>.top>.box,html[data-preset=obsidian][data-theme=dark] #app>.panel,html[data-preset=obsidian][data-theme=dark] #app>.rank{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}}
 @media(max-width:560px){.download-report-options{grid-template-columns:1fr}.account-box{padding:16px!important}.account-actions{justify-content:flex-start}}
 @media(min-width:901px){#app.focus-mode{grid-template-rows:auto minmax(0,1fr)}#app.focus-mode>.top,#app.focus-mode>.rank{display:none}}
 @media(max-width:900px){#app.focus-mode{grid-template-rows:none}#app.focus-mode>.top,#app.focus-mode>.rank{display:none}#app.focus-mode>.panel{min-height:70vh}}
