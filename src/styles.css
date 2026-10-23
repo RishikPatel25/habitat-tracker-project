@@ -225,9 +225,12 @@ tr:hover .hn button,.hn button:focus-visible{opacity:1}.hn button:hover{color:va
 .goal-item-actions button{padding:3px 5px;background:none;border:1px solid var(--line);border-radius:4px;color:var(--mut);font:inherit;font-size:9.5px;cursor:pointer}
 .goal-item-actions button:hover{color:var(--tx);border-color:var(--tx)}
 .addbar{padding:10px 12px}
-.addfield{flex:1;display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;min-width:0;border:1px solid var(--line);border-radius:8px;background:rgba(var(--rgb),.04);cursor:text;transition:border-color .15s,box-shadow .15s}
-.addfield:hover{border-color:rgba(var(--rgb),.4)}
-.addfield:focus-within{border-color:var(--tx);box-shadow:0 0 0 3px rgba(var(--rgb),.1)}
+.addfield{flex:1;display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;min-width:0;border:1px solid rgba(255,255,255,.46);border-radius:8px;background:rgba(var(--rgb),.04);box-shadow:0 0 9px rgba(255,255,255,.055),inset 0 1px 0 rgba(255,255,255,.035);cursor:text;transition:border-color .15s,box-shadow .15s}
+.addfield:hover{border-color:rgba(255,255,255,.68);box-shadow:0 0 11px rgba(255,255,255,.085),inset 0 1px 0 rgba(255,255,255,.045)}
+.addfield:focus-within{border-color:rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(255,255,255,.18),0 0 13px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.06)}
+[data-theme=light] .addfield{border-color:color-mix(in srgb,var(--line) 40%,var(--tx));box-shadow:0 0 8px rgba(var(--rgb),.08),inset 0 1px 0 rgba(255,255,255,.55)}
+[data-theme=light] .addfield:hover{border-color:color-mix(in srgb,var(--line) 15%,var(--tx));box-shadow:0 0 10px rgba(var(--rgb),.12),inset 0 1px 0 rgba(255,255,255,.65)}
+[data-theme=light] .addfield:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--rgb),.12),0 0 10px rgba(var(--rgb),.1)}
 .addfield .hint,.qa{white-space:nowrap}
 kbd{font:inherit;font-size:10px;color:var(--mut);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
 .addbtn{height:36px;border-radius:8px;white-space:nowrap}
