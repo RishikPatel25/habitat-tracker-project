@@ -368,6 +368,69 @@ html[data-density=spacious]{--density-row:37px;--density-gap:16px}
 .theme-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
 .theme-actions .right{display:flex;gap:8px}
 @media(max-width:560px){.theme-form,.theme-colors{grid-template-columns:1fr}.theme-field.full{grid-column:auto}.theme-modal .box{padding:16px}}
+
+/* Optional dashboard glass mode. The default theme remains untouched. */
+.glass-mode-setting{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 13px;border:1px solid var(--line);border-radius:9px;background:var(--surface-secondary)}
+.glass-mode-description{max-width:360px;margin-top:4px;line-height:1.45}
+.glass-switch{display:inline-flex;align-items:center;gap:8px;flex:none;cursor:pointer;color:var(--text-secondary);font-size:11px}
+.glass-switch input{position:absolute;width:1px;height:1px;margin:0;opacity:0;clip-path:inset(50%)}
+.glass-switch-track{position:relative;width:38px;height:22px;border:1px solid var(--border);border-radius:99px;background:var(--surface);transition:background .18s,border-color .18s}
+.glass-switch-track::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--mut);transition:transform .18s,background .18s}
+.glass-switch input:checked+.glass-switch-track{border-color:var(--accent);background:var(--accent)}
+.glass-switch input:checked+.glass-switch-track::after{background:var(--accent-foreground);transform:translateX(16px)}
+.glass-switch input:focus-visible+.glass-switch-track{outline:2px solid var(--accent);outline-offset:3px}
+.glass-switch input:checked~.glass-switch-state{color:var(--accent)}
+
+html[data-glass=true]{--accent:#b8d8ff!important;--accent-foreground:#101722!important;--success:#8fb9e8!important;--rgb:184,216,255!important;--glow:rgba(150,196,255,.3)!important;--cell:rgba(198,220,255,.055)!important}
+html[data-glass=true] body{background:radial-gradient(ellipse at 50% -18%,#162130 0,transparent 48%),radial-gradient(ellipse at 90% 48%,#101923 0,transparent 38%),#070a10}
+html[data-glass=true] #app{isolation:isolate}
+html[data-glass=true] #app>.top>.box,
+html[data-glass=true] #app>.panel,
+html[data-glass=true] #app>.rank,
+html[data-glass=true] header .nav-action,
+html[data-glass=true] header .more-trigger,
+html[data-glass=true] header .profile-trigger,
+html[data-glass=true] .calendar-pop,
+html[data-glass=true] .more-pop,
+html[data-glass=true] .notepop,
+html[data-glass=true] .modal>.box,
+html[data-glass=true] .theme-modal .box,
+html[data-glass=true] .theme-preview,
+html[data-glass=true] .calendar-pop select,
+html[data-glass=true] .calendar-pop .ic,
+html[data-glass=true] .goal-list li,
+html[data-glass=true] .download-report-options .btn,
+html[data-glass=true] .account-help{
+  background:linear-gradient(145deg,rgba(214,231,255,.095),rgba(137,168,208,.035) 58%,rgba(10,17,27,.58));
+  border-color:rgba(195,219,255,.19);
+  -webkit-backdrop-filter:blur(18px) saturate(125%);
+  backdrop-filter:blur(18px) saturate(125%);
+  box-shadow:inset 0 1px 0 rgba(240,247,255,.12),0 10px 30px rgba(0,0,0,.2)
+}
+html[data-glass=true] #app>.top>.box,
+html[data-glass=true] #app>.panel,
+html[data-glass=true] #app>.rank{border-radius:10px}
+html[data-glass=true] .notepop{background:linear-gradient(145deg,rgba(214,231,255,.1),rgba(10,17,27,.9));border-color:rgba(195,219,255,.2)}
+html[data-glass=true] header .nav-action:hover,
+html[data-glass=true] header .more-trigger:hover,
+html[data-glass=true] .more-item:hover,
+html[data-glass=true] .chip:hover,
+html[data-glass=true] .calendar-today:hover{background-color:rgba(185,216,255,.1);border-color:rgba(205,228,255,.38)}
+html[data-glass=true] .btn.pri{background:linear-gradient(135deg,#c7e1ff,#83b2e8);border-color:rgba(224,239,255,.56);color:#101722;box-shadow:0 3px 16px rgba(113,170,235,.18)}
+html[data-glass=true] .tiles{background:rgba(8,14,22,.28);border-color:rgba(195,219,255,.17);border-radius:9px;backdrop-filter:blur(12px)}
+html[data-glass=true] .tile:nth-child(odd),html[data-glass=true] .tile:nth-child(-n+2){border-color:rgba(195,219,255,.13)}
+html[data-glass=true] .glass::before{background:radial-gradient(ellipse at 50% 56%,rgba(175,211,255,.1),transparent 62%)}
+html[data-glass=true] .scroll,html[data-glass=true] .metrics,html[data-glass=true] .addbar{background:rgba(8,13,20,.12)}
+html[data-glass=true] thead th,html[data-glass=true] .nm,html[data-glass=true] .mgrid .lb,html[data-glass=true] .mgrid .av{background:rgba(12,18,28,.91);backdrop-filter:blur(12px)}
+html[data-glass=true] #hr1 th:last-child,html[data-glass=true] #hr2 .month-done-head,html[data-glass=true] #hr2 .month-rate-head{background:rgba(181,211,247,.11)}
+html[data-glass=true] .addfield{border-color:rgba(195,219,255,.2);background:rgba(219,234,255,.035)}
+html[data-glass=true] .chk{border-color:rgba(195,219,255,.3)}
+html[data-glass=true] .brand .dashboard-brand-mark{border-color:rgba(195,219,255,.24);box-shadow:0 0 18px rgba(130,179,242,.12)}
+html[data-glass=true] .modal{background:rgba(2,5,9,.68);backdrop-filter:blur(6px)}
+html[data-glass=true] .account-box{border:1px solid rgba(195,219,255,.2);box-shadow:inset 0 1px 0 rgba(240,247,255,.13),0 18px 60px rgba(0,0,0,.55)}
+html[data-glass=true] :focus-visible{outline-color:#c2e0ff}
+@media(max-width:700px){html[data-glass=true] #app>.top>.box,html[data-glass=true] #app>.panel,html[data-glass=true] #app>.rank{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}}
+@media(prefers-reduced-motion:reduce){.glass-switch-track,.glass-switch-track::after{transition:none}}
 @media(max-width:560px){.download-report-options{grid-template-columns:1fr}.account-box{padding:16px!important}.account-actions{justify-content:flex-start}}
 @media(min-width:901px){#app.focus-mode{grid-template-rows:auto minmax(0,1fr)}#app.focus-mode>.top,#app.focus-mode>.rank{display:none}}
 @media(max-width:900px){#app.focus-mode{grid-template-rows:none}#app.focus-mode>.top,#app.focus-mode>.rank{display:none}#app.focus-mode>.panel{min-height:70vh}}

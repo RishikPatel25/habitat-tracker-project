@@ -1,4 +1,4 @@
-export const THEME_DEFAULT = { preset: 'obsidian', appearance: 'dark', accent: '#557c66', background: '#000000', surface: '#080808', density: 'comfortable' };
+export const THEME_DEFAULT = { preset: 'obsidian', appearance: 'dark', accent: '#557c66', background: '#000000', surface: '#080808', density: 'comfortable', glassMode: false };
 export const THEME_PALETTES = {
   midnight: { dark: ['#080a0f', '#11151c', '#f2f4f8', '#a4aab5', '#303640', '#d9dee8'], light: ['#f1f2f4', '#ffffff', '#20252c', '#5b6470', '#d9dde2', '#596575'] },
   obsidian: { dark: ['#000000', '#080808', '#f5f5f5', '#a6a6a6', '#262626', '#e5e7eb'], light: ['#f1f1f1', '#ffffff', '#202020', '#5b5b5b', '#d5d5d5', '#303030'] },
@@ -21,6 +21,7 @@ export function normalizeTheme(raw, legacy) {
     theme.background = palette[0]; theme.surface = palette[1];
   }
   if (!['compact', 'comfortable', 'spacious'].includes(theme.density)) theme.density = 'comfortable';
+  theme.glassMode = source.glassMode === true;
   return theme;
 }
 

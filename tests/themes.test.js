@@ -28,7 +28,9 @@ test('every preset has readable foreground colors in light and dark modes', () =
 
 test('custom colors and density normalize safely, and invalid values fall back to defaults', () => {
   const custom = normalizeTheme({ preset:'violet', appearance:'light', accent:'#14aacc', background:'#fafafa', surface:'#e7e7e7', density:'spacious' });
-  assert.deepEqual(custom, { preset:'violet', appearance:'light', accent:'#14aacc', background:'#fafafa', surface:'#e7e7e7', density:'spacious' });
+  assert.deepEqual(custom, { preset:'violet', appearance:'light', accent:'#14aacc', background:'#fafafa', surface:'#e7e7e7', density:'spacious', glassMode:false });
+  assert.equal(normalizeTheme({ glassMode:true }).glassMode, true);
+  assert.equal(normalizeTheme({ glassMode:'true' }).glassMode, false);
   assert.equal(validHex('#AABBCC'), true);
   for (const invalid of ['red', '#123', '#12zz00', null]) assert.equal(validHex(invalid), false);
   assert.equal(normalizeTheme({ preset:'unknown', appearance:'sepia', accent:'blue', background:'no', surface:'#123', density:'huge' }).preset, THEME_DEFAULT.preset);
