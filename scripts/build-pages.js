@@ -16,6 +16,7 @@ const publishedAssets = new Set([
   'landing-showcase-video.mp4',
   'landing-signin-preview.png',
   'ritual-habit-logo-source.png',
+  'ritual-habit-symbol.png',
   'ritual-habit-symbol.svg',
   'ritual-habit-full.svg',
 ]);

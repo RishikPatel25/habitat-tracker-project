@@ -1,4 +1,4 @@
-export const THEME_DEFAULT = { preset: 'midnight', appearance: 'dark', accent: '#d9dee8', background: '#080a0f', surface: '#11151c', density: 'comfortable' };
+export const THEME_DEFAULT = { preset: 'sage', appearance: 'light', accent: '#557c66', background: '#f0f2eb', surface: '#fbfcf8', density: 'comfortable' };
 export const THEME_PALETTES = {
   midnight: { dark: ['#080a0f', '#11151c', '#f2f4f8', '#a4aab5', '#303640', '#d9dee8'], light: ['#f1f2f4', '#ffffff', '#20252c', '#5b6470', '#d9dde2', '#596575'] },
   obsidian: { dark: ['#000000', '#080808', '#f5f5f5', '#a6a6a6', '#262626', '#e5e7eb'], light: ['#f1f1f1', '#ffffff', '#202020', '#5b5b5b', '#d5d5d5', '#303030'] },
@@ -6,7 +6,7 @@ export const THEME_PALETTES = {
   violet: { dark: ['#111019', '#191724', '#f3f0ff', '#b4aec7', '#373148', '#a78bfa'], light: ['#f5f3fa', '#ffffff', '#292333', '#625b70', '#ddd7e8', '#7653c6'] },
   sage: { dark: ['#1d241f', '#272f29', '#eff4ed', '#aebcae', '#414c43', '#8eb49a'], light: ['#f0f2eb', '#fbfcf8', '#25302a', '#59675f', '#d1d9d1', '#557c66'] },
 };
-export const THEME_SWATCHES = ['#d9dee8', '#a78bfa', '#557c66', '#4f86c6', '#c66b4e', '#d38b32', '#d95d83', '#4d9b75'];
+export const THEME_SWATCHES = ['#557c66', '#4d9b75', '#4f86c6', '#c66b4e', '#d38b32', '#d95d83', '#a78bfa', '#d9dee8'];
 
 export function validHex(value) { return typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value); }
 

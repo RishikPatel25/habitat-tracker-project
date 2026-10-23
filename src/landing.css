@@ -19,6 +19,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
 /* Navigation */
 .site-header{position:sticky;top:0;z-index:20;display:flex;height:70px;align-items:center;justify-content:space-between;padding:0 max(44px,calc((100vw - 1200px)/2));border-bottom:1px solid #24271d12;background:#faf9f5ed;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 .wordmark{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:-.025em;white-space:nowrap}
+.brand-mark-image{display:block;width:34px;height:34px;border:1px solid #343e4b;border-radius:8px;background:#050607;object-fit:cover}
+.wordmark-light{margin-left:4px;color:var(--green)}
 .brand-mark{display:grid;width:27px;height:27px;place-items:center;border:1px solid #cdd2c7;border-radius:50%;color:var(--green);font:italic 18px/1 Georgia,serif}
 .site-header nav{display:flex;align-items:center;gap:29px;color:#555950;font-size:11px;font-weight:500}
 .site-header nav a,.site-footer nav a{transition:color .2s ease}
@@ -325,64 +327,3 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .reveal{opacity:1;transform:none}
 }
-/* Ritual Habit visual identity */
-:root{color-scheme:dark;--paper:#050607;--paper-alt:#090d12;--ink:#f2f5f9;--muted:#a3adba;--line:#252d37;--green:#bcd9f5;--sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
-body{background:#050607;color:#f2f5f9}
-.site-header{border-bottom-color:#ffffff18;background:#050607ed}
-.wordmark{gap:11px;color:#f3f6fa;font-size:11px;font-weight:500;letter-spacing:.17em}
-.brand-mark-image{display:block;width:32px;height:32px;border:1px solid #343e4b;border-radius:8px;background:#050607;object-fit:cover}
-.wordmark-light{margin-left:4px;color:#aeb9c8}
-.site-header nav{color:#b2bac5}
-.site-header nav a:hover,.site-footer nav a:hover{color:#e6f2ff}
-.nav-cta{border-color:#758397;color:#f2f5f9!important}
-.nav-cta span,.tools-link span,.text-link span{color:#c5e1ff}
-.hero::before{background:radial-gradient(ellipse at 58% 48%,#182433 0%,#080b10 55%,transparent 80%);opacity:.78}
-.eyebrow{color:#b1bdcc}
-.eyebrow-dot,.status-dot{background:#b8d7f7}
-.hero h1 span,.intro-inner h2 span,.section-heading h2 span,.how-heading h2 span,.privacy-section h2 span{color:#c6e0fb}
-.cta-pointer{color:#c5dfff;filter:none}
-.button-primary{background:#dceeff;color:#101720;box-shadow:0 5px 20px #a9d2ff20}
-.button-primary:hover{background:#c9e3fc;box-shadow:0 8px 24px #a9d2ff30}
-.button-secondary{border-color:#46515f;color:#e4eaf1}
-.button-secondary:hover{border-color:#8395a9;background:#121820}
-.hero-note,.hero-meta{color:#9ba6b4}
-.hero-visual{border-color:#27313e;box-shadow:0 26px 65px #0008}
-.intro-band{border-color:var(--line);background:#080b10}
-.experience-section{color:#f2f5f9}
-.section-heading>p,.how-heading>p:not(.eyebrow){color:#a5afbc}
-.experience-collage{border-color:#27313e;background:#0b0f15;box-shadow:0 24px 60px #0006}
-.experience-frame{border-color:#303a48}
-.tools-section{border-color:#303d4d;background:radial-gradient(ellipse at 88% 8%,#1c2a3a 0%,transparent 38%),linear-gradient(135deg,#0d131b,#111923 58%,#0c1219)}
-.tools-section .eyebrow,.tools-heading>p,.tool-number,.tool-title span,.tool-row>p,.tool-mark{color:#b5c1cf}
-.tools-heading h2 span{color:#c4dffa}
-.tool-list,.tool-row{border-color:#ffffff26}
-.tools-link,.text-link{border-color:#9cb9d8;color:#c8def6}
-.how-section{border-color:#252d37;background:linear-gradient(120deg,#090d12 0%,#0b1016 56%,#080c11 100%)}
-.how-heading .eyebrow{color:#b5c5d8}
-.step,.step:first-child{border-color:#29323d}
-.step:hover{background:#ffffff08}
-.step-number{border-color:#3b4b5d;background:#101720;color:#c6d9ee}
-.step h3{color:#f0f4f8}
-.step p{color:#a8b2bf}
-.privacy-section{border-color:#293440;background:radial-gradient(ellipse at 100% 0%,#182535 0%,transparent 48%),linear-gradient(135deg,#0b1118,#0c1016 58%,#0a0e13);box-shadow:0 24px 60px #0005}
-.privacy-copy>.eyebrow{color:#b9cce0}
-.privacy-section>div>p:not(.privacy-note){color:#b5bfcb}
-.privacy-section .text-link{border-color:#c7dff6;background:#dceeff;color:#111820}
-.privacy-section .text-link:hover{background:#c8e1fa;box-shadow:0 8px 18px #050a1020}
-.privacy-note{color:#a1adbb}
-.privacy-note span{background:#b7d8fa}
-.privacy-preview{border-color:#394656}
-.preview-logo{position:absolute;top:12.2%;left:50%;display:grid;width:7%;aspect-ratio:1;place-items:center;overflow:hidden;transform:translateX(-50%);border:1px solid #ffffff80;border-radius:50%;background:linear-gradient(145deg,#484a54,#171a25);box-shadow:0 0 0 1px #ffffff28}
-.preview-logo img{width:140%;height:140%;object-fit:cover;mix-blend-mode:screen}
-.closing{border-block:1px solid #25303c;background:radial-gradient(ellipse at 78% 50%,#1c2b3c 0%,transparent 40%),linear-gradient(115deg,#090e14,#111a24 68%,#0b1118)}
-.closing .eyebrow,.closing-signin{color:#b9c6d5}
-.closing h2 span{color:#c5e1fb}
-.closing-copy>p:not(.eyebrow){color:#c1cad5}
-.button-light{background:#e4f1ff;color:#101720}
-.button-light:hover{background:#cde5ff}
-.site-footer{border-color:#28323e}
-.site-footer>p,.site-footer nav,.footer-credit{color:#a9b3c0}
-.footer-credit{border-color:#394657;background:#101720;color:#d7e6f5}
-@media(max-width:1000px){.site-header nav{color:#d0d8e2}}
-@media(max-width:700px){.wordmark{font-size:10px}.brand-mark-image{width:29px;height:29px}}
-@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.cta-pointer{animation:none}}
