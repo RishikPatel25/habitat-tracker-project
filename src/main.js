@@ -1,12 +1,12 @@
 import { trackerState, selectMonth } from './features/state/trackerState.js';
-import { calculateDashboardAnalytics, buildMonthlyReportData, getDaysInMonth, getWeekRanges, getMonthKey as getKey, localISO, dateFor, isScheduled as scheduled, isValidLocalDate } from './features/analytics/calculations.js';
+import { calculateDashboardAnalytics, buildMonthlyReportData, getDaysInMonth, getWeekRanges, getMonthKey as getKey, localISO, dateFor, isScheduled as scheduled, isValidLocalDate, isBeforeHabitStart } from './features/analytics/calculations.js';
 
 import { createCharts } from './features/analytics/charts.js';
 
 import { parseHabits, SUGGEST } from './features/habits/habitData.js';
 import { addHabitsToState, editHabitInState, archiveHabitInState, restoreHabitInState, deleteHabitFromState, reorderHabitInState, normalizeHabitName } from './features/habits/management.js';
 
-import { createSafeStorage, isPlainObject, earliestCheckedDate, exportLocalData, importLocalData } from './features/storage/localStorage.js';
+import { createSafeStorage, isPlainObject, exportLocalData, importLocalData } from './features/storage/localStorage.js';
 
 import { renderWellbeing } from './features/tracking/wellbeing.js';
 import { persistCompletion } from './features/tracking/completions.js';
@@ -240,10 +240,7 @@ function loadSavedData(){
   const rawNotes=read('ht_notes',[]);
   if(!Array.isArray(rawNotes)){preserveRaw('ht_notes');storageWarning('Saved notes are invalid. A recovery copy was kept.');trackerState.notes=[]}
   else{trackerState.notes=rawNotes.filter(x=>validObject(x)&&typeof x.text==='string');if(trackerState.notes.length!==rawNotes.length)preserveRaw('ht_notes')}
-  let startDatesAdjusted=false;
-  for(const h of [...trackerState.habits,...trackerState.archivedHabits]){const first=earliestCheckedDate(h.id,trackerState.checksData);if(first&&first<(h.startDate||'0001-01-01')){h.startDate=first;startDatesAdjusted=true}}
-  if(startDatesAdjusted||hasValidHabits&&rawHabits.some(x=>validObject(x)&&(!Array.isArray(x.schedule)||!isValidLocalDate(x.startDate))))saveHabits();
-  if(startDatesAdjusted)write('ht_archived',trackerState.archivedHabits);
+  if(hasValidHabits&&rawHabits.some(x=>validObject(x)&&(!Array.isArray(x.schedule)||!isValidLocalDate(x.startDate))))saveHabits();
   if(read('ht_schema_version',null)===null)write('ht_schema_version',2);
 }
 
@@ -332,9 +329,9 @@ function renderTableBody(){
 
       if(d<=n){
 
-        const c=document.createElement('input');c.type='checkbox';c.className='chk';c.checked=trackerState.checksData[mk][h.id][d]===true;const date=dateFor(trackerState.year,trackerState.month,d),future=isFuture(d),beforeStart=localISO(date)<(isValidLocalDate(h.startDate)?h.startDate:'0001-01-01'),isScheduled=scheduled(h,date);c.disabled=!isScheduled;if(!isScheduled)td.classList.add('off');else if(future)td.classList.add('future');
+        const c=document.createElement('input');c.type='checkbox';c.className='chk';c.checked=trackerState.checksData[mk][h.id][d]===true;const date=dateFor(trackerState.year,trackerState.month,d),future=isFuture(d),beforeStart=isBeforeHabitStart(h,date),isScheduled=scheduled(h,date);c.disabled=!isScheduled||beforeStart;if(!isScheduled||beforeStart)td.classList.add('off');else if(future)td.classList.add('future');
 
-        const dateNotes=[];if(beforeStart)dateNotes.push('before tracking start; checking this date moves the start date back');if(!isScheduled)dateNotes.push('rest day; not scheduled');if(future)dateNotes.push('future date; saved but excluded from progress until that date');
+        const dateNotes=[];if(beforeStart)dateNotes.push(`before tracking start (${h.startDate}); excluded from this habit's goal`);if(!isScheduled)dateNotes.push('rest day; not scheduled');if(future)dateNotes.push('future date; saved but excluded from progress until that date');
         const dateNote=dateNotes.join('; ');c.setAttribute('aria-label',`${h.title}, day ${d}${dateNote?`, ${dateNote}`:''}`);if(dateNote)c.title=dateNote.charAt(0).toUpperCase()+dateNote.slice(1)+'.';
 
         c.onchange=e=>toggleCheck(h.id,d,e.target.checked,e.target);
@@ -362,22 +359,11 @@ function toggleCheck(id,day,v,checkbox){
   const mk=getKey(trackerState.year,trackerState.month);
 
   const habit=trackerState.habits.find(h=>h.id===id),date=localISO(dateFor(trackerState.year,trackerState.month,day));
-  const previousStartDate=habit?.startDate,previousMonth=trackerState.checksData[mk],previousHabitChecks=previousMonth?.[id],hadPrevious=!!previousHabitChecks&&Object.hasOwn(previousHabitChecks,day),previousValue=previousHabitChecks?.[day];
+  if(habit&&isBeforeHabitStart(habit,date)){if(checkbox)checkbox.checked=trackerState.checksData[mk]?.[id]?.[day]===true;return;}
   if(!persistCompletion(trackerState.checksData,mk,id,day,v,value=>write('ht_checks',value))){
     if(checkbox)checkbox.checked=trackerState.checksData[mk]?.[id]?.[day]===true;
     storageWarning('This completion could not be saved. The checkbox was restored to its previous saved state.');
     recalculateStatsAndCharts();return;
-  }
-  if(v&&habit&&date<(habit.startDate||'0001-01-01')){
-    habit.startDate=date;
-    if(!saveHabits()){
-      habit.startDate=previousStartDate;
-      if(hadPrevious)trackerState.checksData[mk][id][day]=previousValue;
-      else delete trackerState.checksData[mk][id][day];
-      write('ht_checks',trackerState.checksData);
-      if(checkbox)checkbox.checked=previousValue===true;
-      recalculateStatsAndCharts();return;
-    }
   }
   recalculateStatsAndCharts();
 

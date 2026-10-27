@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateDashboardAnalytics, buildMonthlyReportData, dateFor, isHabitEligibleOnDate } from '../src/features/analytics/calculations.js';
+import { calculateDashboardAnalytics, buildMonthlyReportData, dateFor, isHabitEligibleOnDate, isBeforeHabitStart } from '../src/features/analytics/calculations.js';
 import { persistCompletion } from '../src/features/tracking/completions.js';
 import { buildMonthlyCsv } from '../src/features/exports/monthlyExports.js';
 
@@ -65,6 +65,25 @@ test('screenshot scenario reconciles 38 done, 35 planned, and 41 left out of 114
   assert.equal(withOneTick.dailyRates[18], 3 / 6 * 100); // Daily progress uses the full eligible-habit denominator.
   assert.equal(isHabitEligibleOnDate(snapshotHabits[2], dateFor(2026, 9, 18)), false);
   assert.equal(isHabitEligibleOnDate(snapshotHabits[2], dateFor(2026, 9, 19)), true);
+});
+
+test('habit tracking start fixes the monthly goal; pre-start checks cannot inflate the remaining count', () => {
+  const habit = { id: 'new', title: 'New habit', startDate: day(14), schedule: [0, 1, 2, 3, 4, 5, 6] };
+  const initial = analyze({}, [habit]);
+  assert.equal(initial.monthGoal, 18);
+  assert.equal(initial.remaining, 18);
+  assert.equal(isBeforeHabitStart(habit, dateFor(2026, 9, 13)), true);
+  assert.equal(isHabitEligibleOnDate(habit, dateFor(2026, 9, 13)), false);
+
+  const preStartRecord = { '2026-9': { new: { 13: true } } };
+  const afterPreStartAttempt = analyze(preStartRecord, [habit]);
+  assert.equal(afterPreStartAttempt.monthGoal, initial.monthGoal);
+  assert.equal(afterPreStartAttempt.remaining, initial.remaining);
+
+  const onSchedule = analyze({ '2026-9': { new: { 20: true } } }, [habit]);
+  assert.equal(onSchedule.monthGoal, initial.monthGoal);
+  assert.equal(onSchedule.done, 1);
+  assert.equal(onSchedule.remaining, initial.remaining - 1);
 });
 
 test('rapid check/uncheck persists each latest value exactly once and feeds analytics from that record', () => {

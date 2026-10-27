@@ -25,10 +25,14 @@ export const isValidLocalDate = (value) => {
   return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
 };
 const startDateOf = (habit) => isValidLocalDate(habit.startDate) ? habit.startDate : '0001-01-01';
+export function isBeforeHabitStart(habit, date) {
+  return !!habit && date instanceof Date && Number.isFinite(date.getTime())
+    && localISO(date) < startDateOf(habit);
+}
 /** Shared denominator rule for one habit/date pair: started and scheduled. */
 export function isHabitEligibleOnDate(habit, date) {
   return !!habit && date instanceof Date && Number.isFinite(date.getTime())
-    && localISO(date) >= startDateOf(habit) && isScheduled(habit, date);
+    && !isBeforeHabitStart(habit, date) && isScheduled(habit, date);
 }
 
 /** Sunday–Saturday calendar weeks, clipped to the selected month. */
