@@ -324,3 +324,22 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offs
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .reveal{opacity:1;transform:none}
 }
+
+/* A little more life on first load and on the product imagery. */
+@media(prefers-reduced-motion:no-preference){
+  .site-header{animation:landing-drop-in .55s cubic-bezier(.2,.75,.25,1) both}
+  .hero-copy{animation:landing-rise-in .8s .08s cubic-bezier(.2,.75,.25,1) both}
+  .hero-visual{animation:landing-rise-in .9s .18s cubic-bezier(.2,.75,.25,1) both}
+  .hero-meta{animation:landing-fade-in .7s .55s ease both}
+  .hero::before{animation:ambient-breathe 9s ease-in-out infinite alternate}
+  .experience-frame img,.privacy-preview{transition:transform .7s cubic-bezier(.2,.7,.25,1),filter .7s ease}
+  .experience-frame:hover img{transform:scale(1.035);filter:saturate(1.08)}
+  .privacy-preview-wrap:hover .privacy-preview{transform:translateY(-4px) scale(1.012)}
+  .button-primary,.button-light{position:relative;overflow:hidden}
+  .button-primary::after,.button-light::after{position:absolute;top:-80%;left:-45%;width:32%;height:260%;transform:translateX(-180%) rotate(22deg);background:linear-gradient(90deg,transparent,#ffffff55,transparent);content:"";transition:transform .7s cubic-bezier(.2,.7,.25,1)}
+  .button-primary:hover::after,.button-light:hover::after{transform:translateX(520%) rotate(22deg)}
+}
+@keyframes landing-rise-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes landing-drop-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes landing-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes ambient-breathe{from{opacity:.68;transform:scale(.98)}to{opacity:.95;transform:scale(1.025)}}

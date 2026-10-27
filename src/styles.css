@@ -335,6 +335,44 @@ html[data-theme=dark]{color-scheme:dark}html[data-theme=light]{color-scheme:ligh
   .goal-item-actions{justify-content:flex-start}
 }
 
+/* A calmer, more consistent response to everyday dashboard interactions. */
+#app{--motion-ease:cubic-bezier(.22,.68,0,1.08)}
+#app button,#app select,#app a,#app .panel,#app .box,#app .habit-action-menu,
+#app .more-pop,#app .calendar-pop,#app .goal-meter i{
+  transition-duration:.22s;
+  transition-timing-function:cubic-bezier(.2,.7,.25,1);
+}
+#app .btn,#app .ic,#app .chip,#app .profile-trigger,#app .goal-item-actions button{
+  transition:transform .2s cubic-bezier(.2,.7,.25,1),border-color .2s ease,background-color .2s ease,box-shadow .2s ease,color .2s ease;
+}
+#app .btn:hover,#app .ic:hover,#app .chip:hover,#app .profile-trigger:hover,#app .goal-item-actions button:hover{transform:translateY(-1px)}
+#app .btn:active,#app .ic:active,#app .chip:active,#app .profile-trigger:active{transform:translateY(0) scale(.98)}
+#app .chk{transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s cubic-bezier(.2,.7,.25,1)}
+#app .chk:active{transform:scale(.88)}
+#app .chk::after{transform:rotate(45deg) scale(.7);transform-origin:center;transition:transform .16s cubic-bezier(.2,.7,.25,1)}
+#app .chk:checked::after{transform:rotate(45deg) scale(1)}
+#app .md::before{transition:transform .18s cubic-bezier(.2,.7,.25,1),border-color .18s ease,background-color .18s ease}
+#app .modal.open{animation:dashboard-fade-in .2s ease both}
+#app .modal.open .box{animation:dashboard-modal-in .26s cubic-bezier(.2,.7,.25,1) both}
+#app .panel tbody tr{transition:background-color .18s ease}
+#app .goal-meter i{transition:width .45s cubic-bezier(.2,.7,.25,1)}
+@keyframes dashboard-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes dashboard-modal-in{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  #app *,#app *::before,#app *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+@media(prefers-reduced-motion:no-preference){
+  #app>header{animation:dashboard-enter .45s ease-out both}
+  #app>.top{animation:dashboard-enter .55s .06s cubic-bezier(.2,.7,.25,1) both}
+  #app>.panel{animation:dashboard-enter .6s .12s cubic-bezier(.2,.7,.25,1) both}
+  #app>.rank{animation:dashboard-enter .55s .2s cubic-bezier(.2,.7,.25,1) both}
+  #app .panel tbody tr:hover{transition:background-color .2s ease}
+  #app .panel .chk:checked{animation:check-pop .24s cubic-bezier(.2,.7,.25,1)}
+  #app .panel .rt .bar i{transition:width .45s cubic-bezier(.2,.7,.25,1)}
+}
+@keyframes dashboard-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes check-pop{45%{transform:scale(1.18)}100%{transform:scale(1)}}
+
 /* ---------- Quick notes ---------- */
 .notewrap{position:relative;z-index:30}
 .notebtn{position:relative}
