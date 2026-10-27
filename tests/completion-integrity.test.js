@@ -62,7 +62,7 @@ test('screenshot scenario reconciles 38 done, 35 planned, and 41 left out of 114
   assert.ok(withOneTick.overallPercent < 100);
   assert.equal(withOneTick.dailyDone[18], 3);
   assert.equal(withOneTick.dailyGoal[18], 6);
-  assert.equal(withOneTick.dailyRates[18], 3 / 6 * 100); // Daily progress uses the full eligible-habit denominator.
+  assert.equal(withOneTick.dailyRates[18], 3 / 6 * 100); // Daily progress uses every scheduled active habit checkbox.
   assert.equal(isHabitEligibleOnDate(snapshotHabits[2], dateFor(2026, 9, 18)), false);
   assert.equal(isHabitEligibleOnDate(snapshotHabits[2], dateFor(2026, 9, 19)), true);
 });

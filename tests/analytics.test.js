@@ -80,6 +80,23 @@ test('one completion among six eligible habits is 16.67 percent for the day', ()
   assert.ok(result.overallPercent < 100);
 });
 
+test('daily progress counts every scheduled active checkbox even when habit starts differ', () => {
+  const habits = [
+    { ...habit, id: 'h1', startDate: '2026-10-01' },
+    { ...habit, id: 'h2', startDate: '2026-10-04', backfilledDates: ['2026-10-03'] },
+    { ...habit, id: 'h3', startDate: '2026-10-05', backfilledDates: ['2026-10-03'] },
+  ];
+  const calculate = (checkedIds) => calculateDashboardAnalytics({
+    habits,
+    checksData: { '2026-9': Object.fromEntries(checkedIds.map((id) => [id, { 3: true }])) },
+    year: 2026, month: 9, now: new Date(2026, 9, 3, 12),
+  });
+  assert.ok(Math.abs(calculate(['h2']).dailyRates[2] - (100 / 3)) < 1e-10);
+  assert.ok(Math.abs(calculate(['h1', 'h2']).dailyRates[2] - (200 / 3)) < 1e-10);
+  assert.equal(calculate(['h1', 'h2', 'h3']).dailyRates[2], 100);
+  assert.equal(calculate(['h2']).dailyGoal[2], 3);
+});
+
 test('seven-day average matches the plotted daily-rate mean across month boundaries', () => {
   const older = { ...habit, startDate: '2026-09-01' };
   const newHabit = { id: 'h2', title: 'New', startDate: '2026-10-05', schedule: [0, 1, 2, 3, 4, 5, 6] };
@@ -162,9 +179,9 @@ test('month switching reads only the selected month and checkbox changes recalcu
 test('seven calendar-day moving average ignores dates with no eligible occurrences', () => {
   const scheduled = { ...habit, schedule: [1, 3, 5] };
   const result = calculateDashboardAnalytics({ habits: [scheduled], checksData: { '2026-9': { h1: { 5: true } } }, year: 2026, month: 9, now: new Date(2026, 9, 10, 12) });
-  assert.equal(result.dailyAverage[4], 50);
-  assert.equal(result.dailyAverage[5], 50); // no eligible Tuesday is omitted from the rolling mean.
-  assert.ok(Math.abs(result.dailyAverage[9] - (100 / 3)) < 1e-10); // valid eligible days Oct 5 and Oct 7/9 in the trailing seven dates.
+  assert.ok(Math.abs(result.dailyAverage[4] - (100 / 3)) < 1e-10); // Scheduled zero days count even before this habit's individual tracking start.
+  assert.ok(Math.abs(result.dailyAverage[5] - (100 / 3)) < 1e-10); // Tuesday is unscheduled and omitted from the rolling mean.
+  assert.ok(Math.abs(result.dailyAverage[9] - (100 / 3)) < 1e-10); // Oct 5 is 100%; Oct 7 and 9 are scheduled zero days.
   assert.equal(result.averageDailyRate, result.dailyAverage[result.latestElapsedDay]);
 });
 

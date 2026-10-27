@@ -8,6 +8,10 @@ dist/
 .bun/
 .cache/
 .video-preview/
+.cloudflare-push-review/
+.github-push-review/
+habitat tracker project/
+*.bak
 .dev.vars
 .dev.vars.*
 *.log

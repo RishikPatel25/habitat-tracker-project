@@ -71,7 +71,7 @@ Chart rendering requires access to the pinned CDN script. Habit tracking and dat
 
 ## Analytics rules
 
-- Daily rate is completed scheduled active habits divided by scheduled active habits on that date. Future dates and dates with no eligible habits are omitted. A date with one eligible habit can correctly be 100% for that day; it does not make the month or other dates 100%.
+- Daily rate is completed boxes divided by all active habits scheduled for that date, matching the checkboxes shown in that calendar column. A task's individual tracking start does not shrink the daily denominator. Future dates and dates with no scheduled active habits are omitted. With three scheduled habits, each check adds one third; the day reaches 100% only when all three are checked. Monthly, weekly, and per-habit denominators keep their own tracking-start rules.
 - Weekly rate uses Sunday–Saturday calendar weeks clipped to the selected month. Future scheduled occurrences enter the projected denominator only when that week contains a pre-marked completion.
 - The overall ring is a month projection: completed occurrences plus clearly labeled pre-marked plans divided by all scheduled occurrences in the selected month. Its goal includes future scheduled occurrences.
 - Month Goal is the count of scheduled occurrences from each habit's saved tracking start date through month end, plus individually backfilled dates before that start. Left is that goal minus completed and pre-marked occurrences. Backfilling includes only the selected date; the saved start stays fixed and intervening dates are not silently added as missed opportunities.

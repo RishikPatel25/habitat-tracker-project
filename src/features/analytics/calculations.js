@@ -94,7 +94,9 @@ function streaksFor(habit, checksData, today) {
 
 /**
  * One calculation snapshot feeds cards, habit rows, charts, and highlights.
- * Daily rate = checked active habits / active habits scheduled that date.
+ * Daily rate = checked active habits / all active, scheduled habit rows shown
+ * for that date. This intentionally does not apply per-habit tracking starts:
+ * each visible checkbox shares the day's denominator.
  * Weekly rate = checked eligible occurrences / eligible occurrences; future
  * goals join its denominator only when that week contains a pre-marked plan.
  * Month ring = completed + explicitly shown pre-marked plans / full-month
@@ -128,6 +130,11 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
     const checks = checksData?.[getMonthKey(year, month)]?.[habit.id] || {};
     for (let day = 1; day <= dayCount; day++) {
       const date = dateFor(year, month, day);
+      const scheduled = isScheduled(habit, date);
+      if (scheduled && date <= today) {
+        dailyGoal[day - 1]++;
+        if (checks[day] === true) dailyDone[day - 1]++;
+      }
       if (!isHabitEligibleOnDate(habit, date)) continue;
       monthTarget++;
       const week = weeklyTotals.find((range) => day >= range.start && day <= range.end);
@@ -142,11 +149,9 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
         continue;
       }
       goalToDate++;
-      dailyGoal[day - 1]++;
       week.goal++;
       if (checks[day] === true) {
         actual++;
-        dailyDone[day - 1]++;
         week.done++;
       }
     }
@@ -177,7 +182,7 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
       if (date > today) continue;
       let done = 0, goal = 0;
       for (const habit of habits) {
-        if (!isHabitEligibleOnDate(habit, date)) continue;
+        if (!isScheduled(habit, date)) continue;
         goal++;
         if (checksData?.[getMonthKey(date.getFullYear(), date.getMonth())]?.[habit.id]?.[date.getDate()] === true) done++;
       }

@@ -58,7 +58,7 @@ export function createCharts({ css, warn }) {
             if (item.datasetIndex !== 0) return `${item.dataset.label}: ${displayPercent(item.parsed.y)}`;
             const stats = dailyChart?.dailyStats?.[item.dataIndex];
             if (dailyChart?.plannedDays?.[item.dataIndex]) return stats ? `Planned: ${stats.plannedDone}/${stats.plannedGoal} scheduled habits (${displayPercent(item.parsed.y)})` : `Planned: ${displayPercent(item.parsed.y)}`;
-            return stats ? `Done: ${stats.done}/${stats.goal} eligible habits (${displayPercent(item.parsed.y)})` : `Done: ${displayPercent(item.parsed.y)}`;
+            return stats ? `Done: ${stats.done}/${stats.goal} scheduled active habits (${displayPercent(item.parsed.y)})` : `Done: ${displayPercent(item.parsed.y)}`;
           },
         } } },
         scales: { x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 11 }, maxTicksLimit: 16 } }, y: yAxis },
