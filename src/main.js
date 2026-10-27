@@ -52,7 +52,7 @@ function chooseAppearance(appearance){if(!['light','dark'].includes(appearance))
 
 function setAccentColor(color){if(!validHex(color))return;trackerState.themeDraft.accent=color;applyTheme(trackerState.themeDraft);document.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color.toLowerCase()===color.toLowerCase())))}
 
-function initThemeControls(){THEME_SWATCHES.forEach(color=>{const b=document.createElement('button');b.type='button';b.className='swatch';b.dataset.color=color;b.style.backgroundColor=color;b.title=`Accent ${color}`;b.setAttribute('aria-label',`Use accent color ${color}`);b.setAttribute('aria-pressed','false');b.onclick=()=>setAccentColor(color);$('themeSwatches').appendChild(b)});
+function initThemeControls(){$('themeSwatches').replaceChildren();THEME_SWATCHES.forEach(color=>{const b=document.createElement('button');b.type='button';b.className='swatch';b.dataset.color=color;b.style.backgroundColor=color;b.title=`Accent ${color}`;b.setAttribute('aria-label',`Use accent color ${color}`);b.setAttribute('aria-pressed','false');b.onclick=()=>setAccentColor(color);$('themeSwatches').appendChild(b)});
 
   $('themePreset').onchange=e=>chooseThemePreset(e.target.value);$('themeAppearance').onchange=e=>chooseAppearance(e.target.value);$('themeAccent').oninput=e=>setAccentColor(e.target.value);$('themeBackground').oninput=e=>{trackerState.themeDraft.background=e.target.value;applyTheme(trackerState.themeDraft)};$('themeSurface').oninput=e=>{trackerState.themeDraft.surface=e.target.value;applyTheme(trackerState.themeDraft)};$('themeDensity').onchange=e=>{trackerState.themeDraft.density=e.target.value;applyTheme(trackerState.themeDraft)};
 
