@@ -71,9 +71,9 @@ Chart rendering requires access to the pinned CDN script. Habit tracking and dat
 
 ## Analytics rules
 
-- Daily rate is completed scheduled active habits divided by scheduled active habits on that date. Future dates and dates with no eligible habits are omitted.
+- Daily rate is completed scheduled active habits divided by scheduled active habits on that date. Future dates and dates with no eligible habits are omitted. A date with one eligible habit can correctly be 100% for that day; it does not make the month or other dates 100%.
 - Weekly rate uses Sunday–Saturday calendar weeks clipped to the selected month. Future scheduled occurrences enter the projected denominator only when that week contains a pre-marked completion.
 - The overall ring is a month projection: completed occurrences plus clearly labeled pre-marked plans divided by all scheduled occurrences in the selected month. Its goal includes future scheduled occurrences.
 - Per-habit rate is completed occurrences divided by that habit’s eligible scheduled occurrences through the current date. Archived habits stay out of active dashboard totals; their historical logs remain available in reports through their archive date.
-- The moving average is the mean of valid daily rates in the trailing seven calendar dates; days with no eligible habits are skipped. Calculation values retain full precision and are rounded only for display.
+- The plotted seven-day average is the arithmetic mean of valid daily completion rates across the trailing seven calendar dates, including dates from the prior month at a month boundary. Future dates and dates with no eligible habits are excluded. The displayed average is the latest available point on that same plotted series. No eligible observations display as N/A. Calculation values retain full precision and are rounded only for display.
 - Streaks are calculated per habit from that habit’s schedule. Sleep comparisons describe logged habit rates and do not imply causation.

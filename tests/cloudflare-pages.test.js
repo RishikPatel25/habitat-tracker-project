@@ -40,7 +40,7 @@ test('public landing SEO is indexable while the dashboard is explicitly non-inde
   const dashboard = await read('../tracker.html');
   assert.match(landing, /<title>Ritual Habit — Build a rhythm that feels like yours<\/title>/);
   assert.match(landing, /name="application-name" content="Ritual Habit"/);
-  assert.match(landing, /ritual-habit-symbol\.svg/);
+  assert.match(landing, /ritual-habit-symbol\.png/);
   assert.match(dashboard, /<title>Ritual Habit<\/title>/);
   assert.match(landing, /name="description"/);
   assert.match(landing, /rel="canonical" href="https:\/\/YOUR_PRODUCTION_DOMAIN\/"/);

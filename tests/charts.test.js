@@ -5,8 +5,8 @@ import { createCharts } from '../src/features/analytics/charts.js';
 class MockChart {
   static defaults = { color: '', font: {} };
   static instances = [];
-  constructor(canvas, config) { this.canvas = canvas; this.config = config; this.data = config.data; this.options = config.options; this.destroyed = false; this.updateCount = 0; MockChart.instances.push(this); }
-  update() { this.updateCount++; }
+  constructor(canvas, config) { this.canvas = canvas; this.config = config; this.data = config.data; this.options = config.options; this.destroyed = false; this.updateCount = 0; this.updateModes = []; MockChart.instances.push(this); }
+  update(mode) { this.updateCount++; this.updateModes.push(mode); }
   destroy() { this.destroyed = true; }
 }
 const css = (name) => ({ '--text-primary': '#fff', '--accent': '#ddd', '--text-secondary': '#aaa', '--chart-grid': '#333', '--surface': '#111', '--rgb': '220,220,220', '--mut': '#aaa', '--tx': '#fff', '--glow': '#ddd' }[name] || '#fff');
@@ -26,6 +26,7 @@ test('chart updates reuse instances, and rebuild destroys old instances first', 
   const sample = { dailyBars: [50, null], dailyAverage: [50, null], plannedDays: [false, false], weekly: [{ start: 1, end: 7, rate: 50, done: 1, goal: 2, includesPlan: false }], overallPercent: 50 };
   charts.update(sample); charts.update(sample);
   assert.ok(MockChart.instances.every((chart) => chart.updateCount === 3));
+  assert.deepEqual(MockChart.instances.map((chart) => chart.updateModes.slice(-2)), [['none', 'none'], ['none', 'none'], ['none', 'none']]);
   assert.equal(charts.update({ dailyBars: [], dailyAverage: [], plannedDays: [], weekly: [], overallPercent: 0 }), true);
   assert.equal(charts.rebuild(), true);
   assert.ok(MockChart.instances.slice(0, 3).every((chart) => chart.destroyed));
@@ -42,6 +43,18 @@ test('missing chart library and canvas fail safely without creating charts', () 
   assert.equal(charts.rebuild(), false);
   assert.match(warnings[1], /missing/);
   assert.equal(MockChart.instances.length, 0);
+});
+
+test('invalid source percentages are reported and clamped only for chart rendering', () => {
+  MockChart.instances = []; installEnvironment();
+  const warnings = [], charts = createCharts({ css, warn: (message) => warnings.push(message) });
+  charts.rebuild();
+  charts.update({ dailyBars: [140], dailyAverage: [-4], plannedDays: [false], weekly: [{ start: 1, end: 7, rate: 120, includesPlan: false }], overallPercent: 130 });
+  assert.deepEqual(MockChart.instances[0].data.datasets[0].data, [100]);
+  assert.deepEqual(MockChart.instances[0].data.datasets[1].data, [0]);
+  assert.deepEqual(MockChart.instances[1].data.datasets[1].data, [100]);
+  assert.deepEqual(MockChart.instances[2].data.datasets[0].data, [100, 0]);
+  assert.equal(warnings.length, 4);
 });
 
 

@@ -198,9 +198,13 @@ function loadSavedData(){
   const rawHabits=read('ht_habits',[]),hasValidHabits=Array.isArray(rawHabits);
   if(!hasValidHabits){preserveRaw('ht_habits');storageWarning('Saved habits could not be validated. A recovery copy was kept.');trackerState.habits=[]}
   else{
-    const validHabits=rawHabits.filter(x=>validObject(x)&&x.id&&typeof x.title==='string'&&x.title.trim());
+    const seenHabitIds=new Set();
+    const validHabits=rawHabits.filter(x=>{
+      if(!validObject(x)||typeof x.id!=='string'||!x.id.trim()||typeof x.title!=='string'||!x.title.trim()||seenHabitIds.has(x.id))return false;
+      seenHabitIds.add(x.id);return true;
+    });
     const malformedFields=validHabits.some(x=>(x.startDate&&!isValidLocalDate(x.startDate))||(x.scheduleStartDate&&!isValidLocalDate(x.scheduleStartDate))||(Array.isArray(x.schedule)&&x.schedule.some(day=>!Number.isInteger(day)||day<0||day>6))||(x.scheduleHistory&&!Array.isArray(x.scheduleHistory)));
-    if(validHabits.length!==rawHabits.length||malformedFields)preserveRaw('ht_habits');
+    if(validHabits.length!==rawHabits.length||malformedFields){preserveRaw('ht_habits');storageWarning('Some saved habits were invalid or duplicated. A recovery copy was kept before invalid records were skipped.')}
     trackerState.habits=validHabits.map(x=>({...x,emoji:x.emoji||'📌',schedule:Array.isArray(x.schedule)?[...new Set(x.schedule.filter(day=>Number.isInteger(day)&&day>=0&&day<=6))]:[0,1,2,3,4,5,6],scheduleHistory:Array.isArray(x.scheduleHistory)?x.scheduleHistory.filter(p=>isValidLocalDate(p.startDate)&&isValidLocalDate(p.endDate)&&Array.isArray(p.schedule)):[],startDate:isValidLocalDate(x.startDate)?x.startDate:'0001-01-01'}));
   }
   const rawArchived=read('ht_archived',[]);
@@ -427,13 +431,15 @@ function recalculateStatsAndCharts(){
 
   const a=calculateDashboardAnalytics({habits:trackerState.habits,checksData:trackerState.checksData,sleepData:trackerState.sleepData,year:trackerState.year,month:trackerState.month,now:new Date()});
 
-  $('statGoal').textContent=a.monthGoal;$('statCompleted').textContent=a.done;$('statLeft').textContent=a.remaining;$('donutPercent').textContent=Math.round(a.overallPercent)+'%';$('donutSub').textContent=a.monthGoal?`${a.done} done · ${a.planned} plan`:'No eligible scheduled habits';
+  $('statGoal').textContent=a.monthGoal;$('statCompleted').textContent=a.done;$('statLeft').textContent=a.remaining;$('donutPercent').textContent=a.overallPercent===null?'—':`${Math.round(a.overallPercent)}%`;$('donutSub').textContent=a.monthGoal?`${a.done} done · ${a.planned} plan`:'No eligible scheduled habits';
 
   $('statGoal').title='All eligible scheduled habit-days in this month, including clearly labeled planned goals';$('statCompleted').title='Completed scheduled days through today';$('statLeft').title='Scheduled days not completed or pre-marked';
 
-  $('avgDailyRate').textContent='Avg '+Math.round(a.averageDailyRate)+'%';$('statStreak').textContent=a.currentStreak+'d';$('statStreak').title='Longest current streak among active habits';
+  $('avgDailyRate').textContent=a.averageDailyRate===null?'7-day avg —':`7-day avg ${Math.round(a.averageDailyRate)}%`;$('statStreak').textContent=a.currentStreak+'d';$('statStreak').title='Longest current streak among active habits';
 
-  const noHabits=trackerState.habits.length===0;$('dailyChartEmpty').hidden=!noHabits;$('weeklyChartEmpty').hidden=!noHabits;
+  const noHabits=trackerState.habits.length===0,hasDailyData=a.dailyBars.some(Number.isFinite),hasWeeklyData=a.weekly.some(week=>week.rate!==null);
+  $('dailyChartEmpty').hidden=hasDailyData;$('weeklyChartEmpty').hidden=hasWeeklyData;
+  for(const empty of [$('dailyChartEmpty'),$('weeklyChartEmpty')]){empty.querySelector('strong').textContent=noHabits?'Add a habit to begin':'No progress to plot yet';empty.querySelector('span').textContent=noHabits?'Daily and weekly progress will appear here.':'Eligible progress will appear as scheduled days arrive.'}
   charts?.update({dailyBars:a.dailyBars,dailyAverage:a.dailyAverage,dailyDone:a.dailyDone,dailyGoal:a.dailyGoal,dailyPlannedDone:a.dailyPlannedDone,dailyPlannedGoal:a.dailyPlannedGoal,plannedDays:a.plannedDays,weekly:a.weekly,overallPercent:a.overallPercent});renderAnalysisTable(a.habitStats);renderGoalFeatures();
 
 }

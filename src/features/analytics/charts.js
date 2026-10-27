@@ -133,6 +133,14 @@ export function createCharts({ css, warn }) {
       warn('Analytics data was incomplete; chart updates were skipped.'); return false;
     }
     try {
+      const safePercent = (value, label) => {
+        if (value === null || value === undefined) return null;
+        if (!Number.isFinite(value) || value < 0 || value > 100) {
+          warn(`Invalid ${label} percentage reached the chart; its visualization was clamped.`);
+          return Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : null;
+        }
+        return value;
+      };
       const rgb = css('--rgb');
       dailyChart.data.labels = dailyBars.map((_, index) => index + 1);
       dailyChart.plannedDays = plannedDays;
@@ -140,19 +148,21 @@ export function createCharts({ css, warn }) {
         done: dailyDone?.[index] ?? 0, goal: dailyGoal?.[index] ?? 0,
         plannedDone: dailyPlannedDone?.[index] ?? 0, plannedGoal: dailyPlannedGoal?.[index] ?? 0,
       }));
-      dailyChart.data.datasets[0].data = dailyBars;
+      dailyChart.data.datasets[0].data = dailyBars.map((value, index) => safePercent(value, `daily rate for day ${index + 1}`));
       dailyChart.data.datasets[0].backgroundColor = plannedDays.map((planned) => planned ? `rgba(${rgb},.16)` : `rgba(${rgb},.28)`);
-      dailyChart.data.datasets[1].data = dailyAverage;
-      dailyChart.update();
+      dailyChart.data.datasets[1].data = dailyAverage.map((value, index) => safePercent(value, `seven-day average for day ${index + 1}`));
+      dailyChart.update('none');
       weeklyChart.data.labels = weekly.map((_, index) => `W${index + 1}`);
       weeklyChart.weekInfo = weekly;
       weeklyChart.data.datasets[0].data = weekly.map(() => 100);
-      weeklyChart.data.datasets[1].data = weekly.map((item) => Number.isFinite(item.rate) ? item.rate : null);
+      weeklyChart.data.datasets[1].data = weekly.map((item, index) => safePercent(item.rate, `weekly rate for week ${index + 1}`));
       weeklyChart.data.datasets[1].backgroundColor = weekly.map((item) => item.includesPlan ? `rgba(${rgb},.58)` : css('--accent'));
-      weeklyChart.update();
-      const safePercent = Number.isFinite(overallPercent) ? Math.min(100, Math.max(0, overallPercent)) : 0;
-      donutChart.data.datasets[0].data = [safePercent, Math.max(0, 100 - safePercent)];
-      donutChart.update();
+      weeklyChart.update('none');
+      const ringPercent = safePercent(overallPercent, 'overall ring') ?? 0;
+      donutChart.data.datasets[0].data = [ringPercent, Math.max(0, 100 - ringPercent)];
+      // The ring percentage is rendered as text outside the canvas. Update it
+      // atomically with the arc so the two never disagree during a tween.
+      donutChart.update('none');
       return true;
     } catch (error) {
       console.error('[Ritual Habit] Chart update failed.', error);

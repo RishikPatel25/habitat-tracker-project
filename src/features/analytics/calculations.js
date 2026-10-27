@@ -43,7 +43,7 @@ export function getWeekRanges(year, month) {
   return ranges;
 }
 
-const emptyAnalytics = () => ({ habitStats: [], done: 0, planned: 0, monthGoal: 0, remaining: 0, overallPercent: 0, dailyRates: [], dailyBars: [], dailyAverage: [], plannedDays: [], weekly: [], averageDailyRate: 0, latestElapsedDay: -1 });
+const emptyAnalytics = () => ({ habitStats: [], done: 0, planned: 0, monthGoal: 0, remaining: 0, overallPercent: null, dailyRates: [], dailyBars: [], dailyAverage: [], plannedDays: [], weekly: [], averageDailyRate: null, latestElapsedDay: -1 });
 
 function streaksFor(habit, checksData, today) {
   const qualifies = (date) => {
@@ -94,13 +94,19 @@ function streaksFor(habit, checksData, today) {
  * Month ring = completed + explicitly shown pre-marked plans / full-month
  * scheduled goal. The ring is labeled as a projection in the UI.
  * Habit rate = checked scheduled occurrences / this habit's eligible dates.
- * Seven-day rate = completed eligible occurrences / eligible occurrences in
- * the trailing seven calendar dates. This weights each scheduled habit-day
- * equally, matching daily and weekly rates. Values remain unrounded until display.
+ * Seven-day rate = arithmetic mean of valid daily completion rates in the
+ * trailing seven calendar dates, including the prior month at a boundary.
+ * Days without eligible habits and future dates are omitted. Values remain
+ * unrounded until display.
  */
 export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}, year, month, now = new Date() }) {
   if (!Number.isInteger(year) || year < 1 || !Number.isInteger(month) || month < 0 || month > 11 || !(now instanceof Date) || !Number.isFinite(now.getTime())) return emptyAnalytics();
-  habits = Array.isArray(habits) ? habits.filter((habit) => habit && typeof habit.id === 'string' && habit.id.length) : [];
+  const seenHabitIds = new Set();
+  habits = Array.isArray(habits) ? habits.filter((habit) => {
+    if (!habit || typeof habit.id !== 'string' || !habit.id.length || seenHabitIds.has(habit.id)) return false;
+    seenHabitIds.add(habit.id);
+    return true;
+  }) : [];
   const dayCount = getDaysInMonth(year, month);
   // All calendar dates use local noon so comparing a day with "today" does
   // not accidentally classify today as future due to its noon timestamp.
@@ -145,7 +151,7 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
     return {
       id: habit.id, title: habit.title, emoji: habit.emoji,
       goal: goalToDate, actual, left: goalToDate - actual,
-      percentage: goalToDate ? actual / goalToDate * 100 : 0,
+      percentage: goalToDate ? actual / goalToDate * 100 : null,
       planned: plannedHabit, monthGoal: monthTarget, ...streaks,
     };
   });
@@ -157,14 +163,21 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
     ? dailyPlannedDone[index] / dailyPlannedGoal[index] * 100
     : dateFor(year, month, index + 1) <= today ? rate : null);
   const dailyAverage = dailyRates.map((_, index) => {
-    if (dateFor(year, month, index + 1) > today) return null;
-    const start = Math.max(0, index - 6);
-    let done = 0, goal = 0;
-    for (let day = start; day <= index; day++) {
-      done += dailyDone[day];
-      goal += dailyGoal[day];
+    const end = dateFor(year, month, index + 1);
+    if (end > today) return null;
+    const start = new Date(end); start.setDate(start.getDate() - 6);
+    let sum = 0, count = 0;
+    for (const date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+      if (date > today) continue;
+      let done = 0, goal = 0;
+      for (const habit of habits) {
+        if (!isHabitEligibleOnDate(habit, date)) continue;
+        goal++;
+        if (checksData?.[getMonthKey(date.getFullYear(), date.getMonth())]?.[habit.id]?.[date.getDate()] === true) done++;
+      }
+      if (goal) { sum += done / goal * 100; count++; }
     }
-    return goal ? done / goal * 100 : null;
+    return count ? sum / count : null;
   });
   const weekly = weeklyTotals.map((week) => {
     const includesPlan = week.plannedDone > 0;
@@ -172,10 +185,12 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
     const numerator = week.done + (includesPlan ? week.plannedDone : 0);
     return { ...week, includesPlan, rate: denominator ? numerator / denominator * 100 : null };
   });
-  const elapsed = dailyRates.filter((value) => value !== null);
-  const averageDailyRate = elapsed.length ? elapsed.reduce((sum, value) => sum + value, 0) / elapsed.length : 0;
-  const overallPercent = monthGoal ? (done + planned) / monthGoal * 100 : 0;
   const latestElapsedDay = dailyRates.reduce((last, value, index) => value !== null ? index : last, -1);
+  // The header value is the latest point on the same trailing-seven-calendar-day
+  // series plotted above. A period without eligible opportunities is N/A.
+  const latestAverageIndex = dailyAverage.reduce((last, value, index) => value !== null ? index : last, -1);
+  const averageDailyRate = latestAverageIndex >= 0 ? dailyAverage[latestAverageIndex] : null;
+  const overallPercent = monthGoal ? (done + planned) / monthGoal * 100 : null;
   const currentStreak = habitStats.reduce((max, habit) => Math.max(max, habit.currentStreak), 0);
   const topHabits = [...habitStats].sort((a, b) => b.percentage - a.percentage).slice(0, 3);
   const weekdayRates = Array.from({ length: 7 }, () => []);
