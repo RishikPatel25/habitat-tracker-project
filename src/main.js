@@ -203,9 +203,9 @@ function loadSavedData(){
       if(!validObject(x)||typeof x.id!=='string'||!x.id.trim()||typeof x.title!=='string'||!x.title.trim()||seenHabitIds.has(x.id))return false;
       seenHabitIds.add(x.id);return true;
     });
-    const malformedFields=validHabits.some(x=>(x.startDate&&!isValidLocalDate(x.startDate))||(x.scheduleStartDate&&!isValidLocalDate(x.scheduleStartDate))||(Array.isArray(x.schedule)&&x.schedule.some(day=>!Number.isInteger(day)||day<0||day>6))||(x.scheduleHistory&&!Array.isArray(x.scheduleHistory)));
+    const malformedFields=validHabits.some(x=>(x.startDate&&!isValidLocalDate(x.startDate))||(x.scheduleStartDate&&!isValidLocalDate(x.scheduleStartDate))||(Array.isArray(x.schedule)&&x.schedule.some(day=>!Number.isInteger(day)||day<0||day>6))||(x.scheduleHistory&&!Array.isArray(x.scheduleHistory))||(x.backfilledDates&&!Array.isArray(x.backfilledDates))||(Array.isArray(x.backfilledDates)&&x.backfilledDates.some(date=>!isValidLocalDate(date))));
     if(validHabits.length!==rawHabits.length||malformedFields){preserveRaw('ht_habits');storageWarning('Some saved habits were invalid or duplicated. A recovery copy was kept before invalid records were skipped.')}
-    trackerState.habits=validHabits.map(x=>({...x,emoji:x.emoji||'📌',schedule:Array.isArray(x.schedule)?[...new Set(x.schedule.filter(day=>Number.isInteger(day)&&day>=0&&day<=6))]:[0,1,2,3,4,5,6],scheduleHistory:Array.isArray(x.scheduleHistory)?x.scheduleHistory.filter(p=>isValidLocalDate(p.startDate)&&isValidLocalDate(p.endDate)&&Array.isArray(p.schedule)):[],startDate:isValidLocalDate(x.startDate)?x.startDate:'0001-01-01'}));
+    trackerState.habits=validHabits.map(x=>({...x,emoji:x.emoji||'📌',schedule:Array.isArray(x.schedule)?[...new Set(x.schedule.filter(day=>Number.isInteger(day)&&day>=0&&day<=6))]:[0,1,2,3,4,5,6],scheduleHistory:Array.isArray(x.scheduleHistory)?x.scheduleHistory.filter(p=>isValidLocalDate(p.startDate)&&isValidLocalDate(p.endDate)&&Array.isArray(p.schedule)):[],backfilledDates:Array.isArray(x.backfilledDates)?[...new Set(x.backfilledDates.filter(isValidLocalDate))]:[],startDate:isValidLocalDate(x.startDate)?x.startDate:'0001-01-01'}));
   }
   const rawArchived=read('ht_archived',[]);
   if(!Array.isArray(rawArchived)){preserveRaw('ht_archived');storageWarning('Archived habit data is invalid. A recovery copy was kept.');trackerState.archivedHabits=[]}
@@ -331,7 +331,7 @@ function renderTableBody(){
 
         const c=document.createElement('input');c.type='checkbox';c.className='chk';c.checked=trackerState.checksData[mk][h.id][d]===true;const date=dateFor(trackerState.year,trackerState.month,d),future=isFuture(d),beforeStart=isBeforeHabitStart(h,date),isScheduled=scheduled(h,date);c.disabled=!isScheduled;if(!isScheduled)td.classList.add('off');else if(future)td.classList.add('future');
 
-        const dateNotes=[];if(beforeStart)dateNotes.push(`before tracking start (${h.startDate}); checking moves tracking start earlier`);if(!isScheduled)dateNotes.push('rest day; not scheduled');if(future)dateNotes.push('future date; saved but excluded from progress until that date');
+        const dateNotes=[];if(beforeStart)dateNotes.push(`before tracking start (${h.startDate}); only this explicitly backfilled date is included in progress`);if(!isScheduled)dateNotes.push('rest day; not scheduled');if(future)dateNotes.push('future date; saved but excluded from progress until that date');
         const dateNote=dateNotes.join('; ');c.setAttribute('aria-label',`${h.title}, day ${d}${dateNote?`, ${dateNote}`:''}`);if(dateNote)c.title=dateNote.charAt(0).toUpperCase()+dateNote.slice(1)+'.';
 
         c.onchange=e=>toggleCheck(h.id,d,e.target.checked,e.target);
@@ -359,16 +359,18 @@ function toggleCheck(id,day,v,checkbox){
   const mk=getKey(trackerState.year,trackerState.month);
 
   const habit=trackerState.habits.find(h=>h.id===id),dateObject=dateFor(trackerState.year,trackerState.month,day),date=localISO(dateObject);
-  const previousStartDate=habit?.startDate,previousMonth=trackerState.checksData[mk],previousHabitChecks=previousMonth?.[id],hadPrevious=!!previousHabitChecks&&Object.hasOwn(previousHabitChecks,day),previousValue=previousHabitChecks?.[day];
+  const previousBackfilledDates=habit?.backfilledDates,previousMonth=trackerState.checksData[mk],previousHabitChecks=previousMonth?.[id],hadPrevious=!!previousHabitChecks&&Object.hasOwn(previousHabitChecks,day),previousValue=previousHabitChecks?.[day];
   if(!persistCompletion(trackerState.checksData,mk,id,day,v,value=>write('ht_checks',value))){
     if(checkbox)checkbox.checked=trackerState.checksData[mk]?.[id]?.[day]===true;
     storageWarning('This completion could not be saved. The checkbox was restored to its previous saved state.');
     recalculateStatsAndCharts();return;
   }
-  if(v&&habit&&isBeforeHabitStart(habit,dateObject)){
-    habit.startDate=date;
+  if(habit&&isBeforeHabitStart(habit,dateObject)){
+    const dates=new Set(Array.isArray(habit.backfilledDates)?habit.backfilledDates.filter(isValidLocalDate):[]);
+    if(v)dates.add(date);else dates.delete(date);
+    habit.backfilledDates=[...dates].sort();
     if(!saveHabits()){
-      habit.startDate=previousStartDate;
+      habit.backfilledDates=previousBackfilledDates;
       if(hadPrevious)trackerState.checksData[mk][id][day]=previousValue;
       else delete trackerState.checksData[mk][id][day];
       write('ht_checks',trackerState.checksData);
@@ -448,7 +450,7 @@ function renderAnalysisTable(st){
     const d=$('d_'+x.id),r=$('r_'+x.id);if(!d)return;
 
     d.innerHTML=`<b>${x.actual}</b>/${x.goal}<span class="sub" title="Current streak ${x.currentStreak} days; best ${x.bestStreak} days"> · ${x.currentStreak}d</span>`;
-    d.title=`${x.actual} completed out of ${x.goal} eligible scheduled day${x.goal===1?'':'s'} through today. Earlier dates before this habit started are excluded.`;
+    d.title=`${x.actual} completed out of ${x.goal} eligible scheduled day${x.goal===1?'':'s'} through today. Dates before tracking start are excluded unless individually backfilled.`;
 
     const displayRate=Math.round(x.percentage);
 

@@ -31,8 +31,10 @@ export function isBeforeHabitStart(habit, date) {
 }
 /** Shared denominator rule for one habit/date pair: started and scheduled. */
 export function isHabitEligibleOnDate(habit, date) {
-  return !!habit && date instanceof Date && Number.isFinite(date.getTime())
-    && !isBeforeHabitStart(habit, date) && isScheduled(habit, date);
+  if (!habit || !(date instanceof Date) || !Number.isFinite(date.getTime()) || !isScheduled(habit, date)) return false;
+  const iso = localISO(date);
+  const explicitlyBackfilled = Array.isArray(habit.backfilledDates) && habit.backfilledDates.includes(iso);
+  return iso >= startDateOf(habit) || explicitlyBackfilled;
 }
 
 /** Sunday–Saturday calendar weeks, clipped to the selected month. */
