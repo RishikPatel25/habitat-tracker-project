@@ -49,7 +49,7 @@ export function createCharts({ css, warn }) {
       type: 'bar',
       data: { labels: [], datasets: [
         { type: 'bar', label: 'Daily', data: [], backgroundColor: `rgba(${rgb},.28)`, hoverBackgroundColor: `rgba(${rgb},.6)`, borderRadius: 2, barPercentage: 0.62, categoryPercentage: 1, order: 2 },
-        { type: 'line', label: '7-day completion rate', data: [], borderColor: accent, borderWidth: 1.5, cubicInterpolationMode: 'monotone', pointRadius: 0, pointHoverRadius: 4, pointHoverBackgroundColor: accent, order: 1 },
+        { type: 'line', label: '7-day completion rate', data: [], borderColor: accent, borderWidth: 1.5, cubicInterpolationMode: 'monotone', pointRadius: (context) => context.dataset.data.filter((value) => value !== null).length === 1 ? 4 : 0, pointBackgroundColor: accent, pointBorderColor: accent, pointHoverRadius: 4, pointHoverBackgroundColor: accent, order: 1 },
       ] },
       options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
         plugins: { legend: { display: false }, tooltip: { ...tooltip, callbacks: {

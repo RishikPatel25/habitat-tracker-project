@@ -329,9 +329,9 @@ function renderTableBody(){
 
       if(d<=n){
 
-        const c=document.createElement('input');c.type='checkbox';c.className='chk';c.checked=trackerState.checksData[mk][h.id][d]===true;const date=dateFor(trackerState.year,trackerState.month,d),future=isFuture(d),beforeStart=isBeforeHabitStart(h,date),isScheduled=scheduled(h,date);c.disabled=!isScheduled||beforeStart;if(!isScheduled||beforeStart)td.classList.add('off');else if(future)td.classList.add('future');
+        const c=document.createElement('input');c.type='checkbox';c.className='chk';c.checked=trackerState.checksData[mk][h.id][d]===true;const date=dateFor(trackerState.year,trackerState.month,d),future=isFuture(d),beforeStart=isBeforeHabitStart(h,date),isScheduled=scheduled(h,date);c.disabled=!isScheduled;if(!isScheduled)td.classList.add('off');else if(future)td.classList.add('future');
 
-        const dateNotes=[];if(beforeStart)dateNotes.push(`before tracking start (${h.startDate}); excluded from this habit's goal`);if(!isScheduled)dateNotes.push('rest day; not scheduled');if(future)dateNotes.push('future date; saved but excluded from progress until that date');
+        const dateNotes=[];if(beforeStart)dateNotes.push(`before tracking start (${h.startDate}); checking moves tracking start earlier`);if(!isScheduled)dateNotes.push('rest day; not scheduled');if(future)dateNotes.push('future date; saved but excluded from progress until that date');
         const dateNote=dateNotes.join('; ');c.setAttribute('aria-label',`${h.title}, day ${d}${dateNote?`, ${dateNote}`:''}`);if(dateNote)c.title=dateNote.charAt(0).toUpperCase()+dateNote.slice(1)+'.';
 
         c.onchange=e=>toggleCheck(h.id,d,e.target.checked,e.target);
@@ -358,12 +358,23 @@ function toggleCheck(id,day,v,checkbox){
 
   const mk=getKey(trackerState.year,trackerState.month);
 
-  const habit=trackerState.habits.find(h=>h.id===id),date=localISO(dateFor(trackerState.year,trackerState.month,day));
-  if(habit&&isBeforeHabitStart(habit,date)){if(checkbox)checkbox.checked=trackerState.checksData[mk]?.[id]?.[day]===true;return;}
+  const habit=trackerState.habits.find(h=>h.id===id),dateObject=dateFor(trackerState.year,trackerState.month,day),date=localISO(dateObject);
+  const previousStartDate=habit?.startDate,previousMonth=trackerState.checksData[mk],previousHabitChecks=previousMonth?.[id],hadPrevious=!!previousHabitChecks&&Object.hasOwn(previousHabitChecks,day),previousValue=previousHabitChecks?.[day];
   if(!persistCompletion(trackerState.checksData,mk,id,day,v,value=>write('ht_checks',value))){
     if(checkbox)checkbox.checked=trackerState.checksData[mk]?.[id]?.[day]===true;
     storageWarning('This completion could not be saved. The checkbox was restored to its previous saved state.');
     recalculateStatsAndCharts();return;
+  }
+  if(v&&habit&&isBeforeHabitStart(habit,dateObject)){
+    habit.startDate=date;
+    if(!saveHabits()){
+      habit.startDate=previousStartDate;
+      if(hadPrevious)trackerState.checksData[mk][id][day]=previousValue;
+      else delete trackerState.checksData[mk][id][day];
+      write('ht_checks',trackerState.checksData);
+      if(checkbox)checkbox.checked=previousValue===true;
+      recalculateStatsAndCharts();return;
+    }
   }
   recalculateStatsAndCharts();
 

@@ -67,7 +67,7 @@ test('screenshot scenario reconciles 38 done, 35 planned, and 41 left out of 114
   assert.equal(isHabitEligibleOnDate(snapshotHabits[2], dateFor(2026, 9, 19)), true);
 });
 
-test('habit tracking start fixes the monthly goal; pre-start checks cannot inflate the remaining count', () => {
+test('backfilling an earlier day keeps the remaining count stable while tracking start expands', () => {
   const habit = { id: 'new', title: 'New habit', startDate: day(14), schedule: [0, 1, 2, 3, 4, 5, 6] };
   const initial = analyze({}, [habit]);
   assert.equal(initial.monthGoal, 18);
@@ -75,10 +75,11 @@ test('habit tracking start fixes the monthly goal; pre-start checks cannot infla
   assert.equal(isBeforeHabitStart(habit, dateFor(2026, 9, 13)), true);
   assert.equal(isHabitEligibleOnDate(habit, dateFor(2026, 9, 13)), false);
 
-  const preStartRecord = { '2026-9': { new: { 13: true } } };
-  const afterPreStartAttempt = analyze(preStartRecord, [habit]);
-  assert.equal(afterPreStartAttempt.monthGoal, initial.monthGoal);
-  assert.equal(afterPreStartAttempt.remaining, initial.remaining);
+  const backfilledHabit = { ...habit, startDate: day(13) };
+  const backfilled = analyze({ '2026-9': { new: { 13: true } } }, [backfilledHabit]);
+  assert.equal(backfilled.monthGoal, initial.monthGoal + 1);
+  assert.equal(backfilled.done, 1);
+  assert.equal(backfilled.remaining, initial.remaining);
 
   const onSchedule = analyze({ '2026-9': { new: { 20: true } } }, [habit]);
   assert.equal(onSchedule.monthGoal, initial.monthGoal);
