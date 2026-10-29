@@ -602,7 +602,31 @@ $('goalType').addEventListener('change',toggleGoalFields);
 $('goalForm').addEventListener('submit',submitGoal);
 $('goalList').addEventListener('click',handleGoalListAction);
 
+
+function clearAllData(){
+  if(!confirm('Clear all habits, check-ins, and notes? This will reset your tracker to a clean, empty state.')) return;
+  const keys=['ht_habits','ht_checks','ht_mood','ht_sleep','ht_goals','ht_notes','ht_archived'];
+  keys.forEach(k=>localStorage.removeItem(k));
+  trackerState.habits=[];
+  trackerState.archivedHabits=[];
+  trackerState.goals=[];
+  trackerState.checksData={};
+  trackerState.moodData={};
+  trackerState.sleepData={};
+  trackerState.notes=[];
+  renderTableBody();
+  renderNotes();
+  renderChips();
+  recalculateStatsAndCharts();
+}
+
 async function initialize(){
+  const searchParams = new URLSearchParams(location.search);
+  if(searchParams.has("clear") || searchParams.has("reset")){
+    const keys=["ht_habits","ht_checks","ht_mood","ht_sleep","ht_goals","ht_notes","ht_archived"];
+    keys.forEach(k=>localStorage.removeItem(k));
+    try{history.replaceState({}, "", location.pathname)}catch{}
+  }
   try{
     await configureCloud();
     loadSavedData();
@@ -667,6 +691,6 @@ async function handleImportFile(event){const file=event.target.files?.[0];if(!fi
 
 $('importDataInput')?.addEventListener('change',handleImportFile);
 
-Object.assign(window,{toggleNotes,addNote,shiftMonth,updateCalendar,toggleTheme,openThemeSettings,goToday,openDownloadReports,closeDownloadReports,openAccountDialog,closeAccountDialog,toggleAccountMode,sendPasswordReset,signOutAccount,downloadMonthlyReport,printMonthlyReport,downloadMonthlyPdf,downloadMonthlyPng,downloadMonthlyCsv,toggleFocusMode,toggleCalendar,closeCalendar,closeMoreMenu,restoreHabit,focusAdd,submitAdd,closeThemeSettings,resetThemeDraft,saveThemeSettings,editHabit,archiveHabit,deleteHabit,reorderHabit,addHabits,deleteNote,exportAppData,openImportPicker,openGoalManager,closeGoalManager});
+Object.assign(window,{toggleNotes,addNote,shiftMonth,updateCalendar,toggleTheme,openThemeSettings,goToday,openDownloadReports,closeDownloadReports,openAccountDialog,closeAccountDialog,toggleAccountMode,sendPasswordReset,signOutAccount,downloadMonthlyReport,printMonthlyReport,downloadMonthlyPdf,downloadMonthlyPng,downloadMonthlyCsv,toggleFocusMode,toggleCalendar,closeCalendar,closeMoreMenu,restoreHabit,focusAdd,submitAdd,closeThemeSettings,resetThemeDraft,saveThemeSettings,editHabit,archiveHabit,deleteHabit,reorderHabit,addHabits,deleteNote,exportAppData,openImportPicker,openGoalManager,closeGoalManager,clearAllData});
 
 

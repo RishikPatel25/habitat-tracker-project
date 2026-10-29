@@ -65,7 +65,8 @@ select:hover,.ic:hover,.btn:hover{border-color:var(--tx)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .top{display:grid;grid-template-columns:5fr 3fr 4fr;gap:12px;min-height:0}
 .sumwrap{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;flex:1;min-height:0;align-items:center}
-.ring{position:relative;height:100%;min-height:0}
+.ring{position:relative;width:100%;max-width:130px;aspect-ratio:1/1;margin:0 auto;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0}
+.ring canvas{display:block;max-width:100%!important;max-height:100%!important;filter:drop-shadow(0 0 6px rgba(var(--rgb),.25))}
 .ring .rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}.ring b{font-size:32px;font-weight:200;line-height:1}.ring small{color:var(--mut);font-size:10px;margin-top:5px}
 .lg{display:inline-block;vertical-align:middle;margin-right:6px}.lg.b{width:8px;height:8px;background:rgba(var(--rgb),.3);border-radius:1px}.lg.l{width:14px;height:0;border-top:1.5px solid var(--tx)}
 .tiles{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:4px}
@@ -158,7 +159,7 @@ tbody td{height:var(--density-row)}
 .glass{position:relative;border-radius:14px;background:linear-gradient(160deg,rgba(var(--rgb),.09),rgba(var(--rgb),.02) 60%);border-color:rgba(var(--rgb),.16);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 rgba(var(--rgb),.22),0 12px 40px rgba(0,0,0,.25)}
 .glass::before{content:'';position:absolute;left:0;top:0;width:52%;height:100%;background:radial-gradient(ellipse at 50% 56%,rgba(var(--rgb),.12),transparent 62%);pointer-events:none}
 .glass>*{position:relative}
-.glass .ring{height:calc(100% + 14px);margin:-7px 0}.glass .ring b{font-size:23px;font-weight:200;text-shadow:0 0 18px rgba(var(--rgb),.4)}
+.glass .ring{margin:0 auto;height:auto}.glass .ring b{font-size:23px;font-weight:200;text-shadow:0 0 18px rgba(var(--rgb),.4)}
 .glass .tiles{border:0;border-radius:12px;background:rgba(var(--rgb),.04);box-shadow:inset 0 0 0 1px rgba(var(--rgb),.12),inset 0 1px 0 rgba(var(--rgb),.16);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .glass .tile:nth-child(odd){border-right:1px solid rgba(var(--rgb),.1)}
 .glass .tile:nth-child(-n+2){border-bottom:1px solid rgba(var(--rgb),.1)}

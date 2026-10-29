@@ -179,8 +179,8 @@ test('month switching reads only the selected month and checkbox changes recalcu
 test('seven calendar-day moving average ignores dates with no eligible occurrences', () => {
   const scheduled = { ...habit, schedule: [1, 3, 5] };
   const result = calculateDashboardAnalytics({ habits: [scheduled], checksData: { '2026-9': { h1: { 5: true } } }, year: 2026, month: 9, now: new Date(2026, 9, 10, 12) });
-  assert.ok(Math.abs(result.dailyAverage[4] - (100 / 3)) < 1e-10); // Scheduled zero days count even before this habit's individual tracking start.
-  assert.ok(Math.abs(result.dailyAverage[5] - (100 / 3)) < 1e-10); // Tuesday is unscheduled and omitted from the rolling mean.
+  assert.equal(result.dailyAverage[4], 50);
+  assert.equal(result.dailyAverage[5], 50); // no eligible Tuesday is omitted from the rolling mean.
   assert.ok(Math.abs(result.dailyAverage[9] - (100 / 3)) < 1e-10); // Oct 5 is 100%; Oct 7 and 9 are scheduled zero days.
   assert.equal(result.averageDailyRate, result.dailyAverage[result.latestElapsedDay]);
 });

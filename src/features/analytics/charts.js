@@ -18,16 +18,17 @@ export function createCharts({ css, warn }) {
   const glow = {
     id: 'glow',
     beforeDatasetsDraw(chart) {
-      const arc = chart.getDatasetMeta(0).data[0]; if (!arc) return;
-      const { ctx } = chart; ctx.save(); ctx.beginPath();
+      const arc = chart.getDatasetMeta(0)?.data?.[0];
+      if (!arc || !Number.isFinite(arc.x) || !Number.isFinite(arc.y) || !Number.isFinite(arc.innerRadius) || !Number.isFinite(arc.outerRadius)) return;
+      const { ctx } = chart;
+      ctx.save();
+      ctx.beginPath();
       ctx.arc(arc.x, arc.y, (arc.innerRadius + arc.outerRadius) / 2, 0, Math.PI * 2);
-      ctx.lineWidth = arc.outerRadius - arc.innerRadius;
-      ctx.strokeStyle = `rgba(${css('--rgb')},.1)`; ctx.stroke(); ctx.restore();
+      ctx.lineWidth = Math.max(1, arc.outerRadius - arc.innerRadius);
+      ctx.strokeStyle = `rgba(${css('--rgb')},.12)`;
+      ctx.stroke();
+      ctx.restore();
     },
-    beforeDatasetDraw(chart, args) {
-      if (args.index === 0) { chart.ctx.save(); chart.ctx.shadowColor = css('--glow'); chart.ctx.shadowBlur = 10; }
-    },
-    afterDatasetDraw(chart, args) { if (args.index === 0) chart.ctx.restore(); },
   };
 
   function rebuild() {
@@ -86,8 +87,8 @@ export function createCharts({ css, warn }) {
     });
     nextDonut = new Chart(canvases[2], {
       type: 'doughnut', plugins: [glow],
-      data: { labels: ['Done and planned', 'Remaining'], datasets: [{ data: [0, 100], borderWidth: 0, borderRadius: (context) => context.dataIndex === 0 ? 24 : 0, backgroundColor: [accent, 'rgba(0,0,0,0)'] }] },
-      options: { responsive: true, maintainAspectRatio: false, cutout: '80%', layout: { padding: 0 }, animation: { duration: 900, easing: 'easeOutQuart' }, plugins: { legend: { display: false }, tooltip: { enabled: false } } },
+      data: { labels: ['Done and planned', 'Remaining'], datasets: [{ data: [0, 100], borderWidth: 0, borderRadius: 0, backgroundColor: [accent, 'rgba(0,0,0,0)'] }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '80%', layout: { padding: 4 }, animation: false, plugins: { legend: { display: false }, tooltip: { enabled: false } } },
     });
     dailyChart = nextDaily; weeklyChart = nextWeekly; donutChart = nextDonut;
     return true;
