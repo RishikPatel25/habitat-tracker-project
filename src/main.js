@@ -430,9 +430,19 @@ function recalculateStatsAndCharts(){
 
   const a=calculateDashboardAnalytics({habits:trackerState.habits,checksData:trackerState.checksData,sleepData:trackerState.sleepData,year:trackerState.year,month:trackerState.month,now:new Date()});
 
-  $('statGoal').textContent=a.monthGoal;$('statCompleted').textContent=a.done;$('statLeft').textContent=a.remaining;$('donutPercent').textContent=a.overallPercent===null?'—':`${Math.round(a.overallPercent)}%`;$('donutSub').textContent=a.monthGoal?`${a.done} done · ${a.planned} plan`:'No eligible scheduled habits';
-
-  $('statGoal').title='All eligible scheduled habit-days in this month, including clearly labeled planned goals';$('statCompleted').title='Completed scheduled days through today';$('statLeft').title='Scheduled days not completed or pre-marked';
+  const isMonthOngoing = a.goalToDate !== a.monthGoal && a.monthGoal > 0;
+  $('statGoal').textContent = a.goalToDate;
+  if ($('statGoalLabel')) $('statGoalLabel').textContent = isMonthOngoing ? 'Goal to date' : 'Month goal';
+  if ($('overallSub')) $('overallSub').textContent = isMonthOngoing ? 'Current progress' : 'Month progress';
+  $('statCompleted').textContent = a.done;
+  $('statLeft').textContent = a.remaining;
+  $('donutPercent').textContent = a.overallPercent === null ? '—' : `${Math.round(a.overallPercent)}%`;
+  $('donutSub').textContent = a.goalToDate
+    ? (isMonthOngoing ? `${a.done} done · ${a.remaining} left` : `${a.done} done · ${a.remaining} left`)
+    : (a.monthGoal ? `0 done · ${a.monthGoal} scheduled` : 'No eligible scheduled habits');
+  $('statGoal').title = isMonthOngoing ? `Eligible scheduled habit-days through today (${a.monthGoal} scheduled for full month)` : 'All eligible scheduled habit-days in this month';
+  $('statCompleted').title = 'Completed scheduled days through today';
+  $('statLeft').title = isMonthOngoing ? 'Eligible scheduled days remaining to date' : 'Scheduled days not completed';
 
   $('avgDailyRate').textContent=a.averageDailyRate===null?'7-day avg —':`7-day avg ${Math.round(a.averageDailyRate)}%`;$('statStreak').textContent=a.currentStreak+'d';$('statStreak').title='Longest current streak among active habits';
 

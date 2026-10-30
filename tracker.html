@@ -82,11 +82,11 @@ try {
       <div class="cv"><canvas id="weeklyChart"></canvas><div class="chart-empty-state" id="weeklyChartEmpty" hidden><strong>Weekly progress</strong><span>Compare your habit completion week by week.</span></div></div>
     </section>
     <section class="box pad glass">
-      <div class="row"><h2>Overall</h2><span class="sub">Month projection</span></div>
+      <div class="row"><h2>Overall</h2><span class="sub" id="overallSub">Current progress</span></div>
       <div class="sumwrap">
         <div class="ring"><canvas id="donutChart"></canvas><div class="rc"><b id="donutPercent">0%</b><small id="donutSub"></small></div></div>
         <div class="tiles">
-          <div class="tile"><span>Month goal</span><strong id="statGoal">0</strong></div>
+          <div class="tile"><span id="statGoalLabel">Goal to date</span><strong id="statGoal">0</strong></div>
           <div class="tile"><span>Done</span><strong id="statCompleted">0</strong></div>
           <div class="tile"><span>Left</span><strong id="statLeft">0</strong></div>
           <div class="tile"><span>Streak</span><strong id="statStreak">0d</strong></div>

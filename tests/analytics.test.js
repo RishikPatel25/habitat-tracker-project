@@ -9,9 +9,12 @@ test('future pre-marks are planned and included in projected month overall, not 
   const result = calculateDashboardAnalytics({ habits: [habit], checksData: { '2026-9': { h1: { 2: true, 17: true, 31: true } } }, year: 2026, month: 9, now: today });
   assert.equal(result.done, 2);
   assert.equal(result.planned, 1);
+  assert.equal(result.goalToDate, 17);
+  assert.equal(result.remaining, 15);
+  assert.ok(Math.abs(result.overallPercent - (200 / 17)) < 1e-10);
   assert.equal(result.monthGoal, 31);
-  assert.equal(result.remaining, 28);
-  assert.ok(Math.abs(result.overallPercent - (300 / 31)) < 1e-10);
+  assert.equal(result.monthRemaining, 28);
+  assert.ok(Math.abs(result.projectedPercent - (300 / 31)) < 1e-10);
   assert.equal(result.dailyRates[16], 100);
 });
 
@@ -30,7 +33,8 @@ test('a future month has no actual progress until the month begins', () => {
   const result = calculateDashboardAnalytics({ habits: [habit], checksData: {}, year: 2026, month: 11, now: today });
   assert.equal(result.done, 0);
   assert.equal(result.planned, 0);
-  assert.equal(result.overallPercent, 0);
+  assert.equal(result.overallPercent, null);
+  assert.equal(result.projectedPercent, 0);
   assert.ok(result.dailyRates.every((value) => value === null));
 });
 

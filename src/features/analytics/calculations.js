@@ -49,7 +49,7 @@ export function getWeekRanges(year, month) {
   return ranges;
 }
 
-const emptyAnalytics = () => ({ habitStats: [], done: 0, planned: 0, monthGoal: 0, remaining: 0, overallPercent: null, dailyRates: [], dailyBars: [], dailyAverage: [], plannedDays: [], weekly: [], averageDailyRate: null, latestElapsedDay: -1 });
+const emptyAnalytics = () => ({ habitStats: [], done: 0, planned: 0, goal: 0, goalToDate: 0, monthGoal: 0, remaining: 0, monthRemaining: 0, overallPercent: null, projectedPercent: null, dailyRates: [], dailyBars: [], dailyAverage: [], plannedDays: [], weekly: [], averageDailyRate: null, latestElapsedDay: -1, currentStreak: 0 });
 
 function streaksFor(habit, checksData, today) {
   const qualifies = (date) => {
@@ -198,7 +198,11 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
   // series plotted above. A period without eligible opportunities is N/A.
   const latestAverageIndex = dailyAverage.reduce((last, value, index) => value !== null ? index : last, -1);
   const averageDailyRate = latestAverageIndex >= 0 ? dailyAverage[latestAverageIndex] : null;
-  const overallPercent = monthGoal ? (done + planned) / monthGoal * 100 : null;
+  const goalToDate = habitStats.reduce((sum, h) => sum + h.goal, 0);
+  const remaining = Math.max(0, goalToDate - done);
+  const overallPercent = goalToDate ? done / goalToDate * 100 : null;
+  const monthRemaining = Math.max(0, monthGoal - done - planned);
+  const projectedPercent = monthGoal ? (done + planned) / monthGoal * 100 : null;
   const currentStreak = habitStats.reduce((max, habit) => Math.max(max, habit.currentStreak), 0);
   const topHabits = [...habitStats].sort((a, b) => b.percentage - a.percentage).slice(0, 3);
   const weekdayRates = Array.from({ length: 7 }, () => []);
@@ -223,7 +227,14 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
     ? { difference: restedAverage - shorterAverage, restedNights: sleepBands.rested.length, shorterNights: sleepBands.shorter.length }
     : null;
   return {
-    habitStats, done, planned, monthGoal, remaining: Math.max(0, monthGoal - done - planned), overallPercent,
+    habitStats, done, planned,
+    goal: goalToDate,
+    goalToDate,
+    remaining,
+    overallPercent,
+    monthGoal,
+    monthRemaining,
+    projectedPercent,
     dailyRates, dailyBars, dailyAverage, dailyDone, dailyGoal, dailyPlannedDone, dailyPlannedGoal, plannedDays, weekly, averageDailyRate, latestElapsedDay, currentStreak,
     highlights: { topHabits, bestWeekday, sleepComparison },
   };
