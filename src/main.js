@@ -240,6 +240,22 @@ function loadSavedData(){
   const rawNotes=read('ht_notes',[]);
   if(!Array.isArray(rawNotes)){preserveRaw('ht_notes');storageWarning('Saved notes are invalid. A recovery copy was kept.');trackerState.notes=[]}
   else{trackerState.notes=rawNotes.filter(x=>validObject(x)&&typeof x.text==='string');if(trackerState.notes.length!==rawNotes.length)preserveRaw('ht_notes')}
+  trackerState.habits.forEach(h => {
+    let earliest = null;
+    for (const [mk, monthChecks] of Object.entries(trackerState.checksData || {})) {
+      const match = /^(\d{4})-(\d{1,2})$/.exec(mk);
+      if (!match || !monthChecks?.[h.id]) continue;
+      for (const [day, val] of Object.entries(monthChecks[h.id])) {
+        if (val === true && /^\d+$/.test(day)) {
+          const iso = `${match[1]}-${String(Number(match[2]) + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          if (!earliest || iso < earliest) earliest = iso;
+        }
+      }
+    }
+    if (earliest && (!isValidLocalDate(h.startDate) || earliest < h.startDate)) {
+      h.startDate = earliest;
+    }
+  });
   if(hasValidHabits&&rawHabits.some(x=>validObject(x)&&(!Array.isArray(x.schedule)||!isValidLocalDate(x.startDate))))saveHabits();
   if(read('ht_schema_version',null)===null)write('ht_schema_version',2);
 }
@@ -369,6 +385,7 @@ function toggleCheck(id,day,v,checkbox){
     const dates=new Set(Array.isArray(habit.backfilledDates)?habit.backfilledDates.filter(isValidLocalDate):[]);
     if(v)dates.add(date);else dates.delete(date);
     habit.backfilledDates=[...dates].sort();
+    if(v && date < habit.startDate) habit.startDate = date;
     if(!saveHabits()){
       habit.backfilledDates=previousBackfilledDates;
       if(hadPrevious)trackerState.checksData[mk][id][day]=previousValue;
@@ -508,7 +525,8 @@ function handleGoalListAction(event){const button=event.target.closest('[data-go
 function addHabits(text){
 
   const list=parseHabits(text);if(!list.length){storageWarning('Enter a habit name or paste a list of names.');return false;}
-  const result=addHabitsToState(trackerState,list,localISO(new Date()));
+  const monthStart = localISO(dateFor(trackerState.year, trackerState.month, 1));
+  const result=addHabitsToState(trackerState,list,monthStart);
   if(!result.added.length){storageWarning(`No habits added. Already exists: ${result.duplicates.join(', ')}.`);return false;}
   if(!saveHabits()){trackerState.habits.splice(-result.added.length,result.added.length);return false;}
   updateCalendar();
