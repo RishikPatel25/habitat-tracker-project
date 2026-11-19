@@ -525,6 +525,7 @@ html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,
 .glass .ring{height:auto;margin:0}
 .glass .tile{padding-block:6px}
 .glass .tiles{max-width:100%}
+@media(max-width:900px) and (max-height:900px){.glass .ring{width:min(100%,8.5dvh)}}
 .mgrid input{user-select:text;cursor:text;touch-action:manipulation;transition:background-color .12s,box-shadow .12s}
 .mgrid input:hover,.mgrid input:focus{background:rgba(var(--rgb),.08)}
 .mgrid input::placeholder{color:var(--mut);opacity:.75}
