@@ -21,6 +21,7 @@ test('chart updates reuse instances, and rebuild destroys old instances first', 
   const warnings = [], charts = createCharts({ css, warn: (message) => warnings.push(message) });
   assert.equal(charts.rebuild(), true);
   assert.equal(MockChart.instances.length, 3);
+  assert.deepEqual(MockChart.instances[2].data.labels, ['Done', 'Remaining']);
   const sparsePointRadius = MockChart.instances[0].data.datasets[1].pointRadius;
   assert.equal(sparsePointRadius({ dataset: { data: [0] } }), 4); // One zero-rate day stays visible at the baseline.
   assert.equal(sparsePointRadius({ dataset: { data: [25, 50] } }), 0);
@@ -28,6 +29,7 @@ test('chart updates reuse instances, and rebuild destroys old instances first', 
   assert.equal(MockChart.instances.length, 3); // Theme changes restyle rather than reinitialize canvases.
   const sample = { dailyBars: [50, null], dailyAverage: [50, null], plannedDays: [false, false], weekly: [{ start: 1, end: 7, rate: 50, done: 1, goal: 2, includesPlan: false }], overallPercent: 50 };
   charts.update(sample); charts.update(sample);
+  assert.deepEqual(MockChart.instances[2].data.datasets[0].data, [50, 50]);
   assert.ok(MockChart.instances.every((chart) => chart.updateCount === 3));
   assert.deepEqual(MockChart.instances.map((chart) => chart.updateModes.slice(-2)), [['none', 'none'], ['none', 'none'], ['none', 'none']]);
   assert.equal(charts.update({ dailyBars: [], dailyAverage: [], plannedDays: [], weekly: [], overallPercent: 0 }), true);

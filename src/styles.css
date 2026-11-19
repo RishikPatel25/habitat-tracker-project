@@ -522,7 +522,7 @@ html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,
 .sumwrap{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
 .tiles{width:100%;min-width:0}
 .cv canvas,.ring canvas{max-width:100%}
-.glass .ring{height:100%;margin:0}
+.glass .ring{height:auto;margin:0}
 .glass .tile{padding-block:6px}
 .glass .tiles{max-width:100%}
 .mgrid input{user-select:text;cursor:text;touch-action:manipulation;transition:background-color .12s,box-shadow .12s}

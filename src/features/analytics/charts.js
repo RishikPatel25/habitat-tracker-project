@@ -87,7 +87,7 @@ export function createCharts({ css, warn }) {
     });
     nextDonut = new Chart(canvases[2], {
       type: 'doughnut', plugins: [glow],
-      data: { labels: ['Done and planned', 'Remaining'], datasets: [{ data: [0, 100], borderWidth: 0, borderRadius: 0, backgroundColor: [accent, 'rgba(0,0,0,0)'] }] },
+      data: { labels: ['Done', 'Remaining'], datasets: [{ data: [0, 100], borderWidth: 0, borderRadius: 0, backgroundColor: [accent, 'rgba(0,0,0,0)'] }] },
       options: { responsive: true, maintainAspectRatio: false, cutout: '80%', layout: { padding: 4 }, animation: false, plugins: { legend: { display: false }, tooltip: { enabled: false } } },
     });
     dailyChart = nextDaily; weeklyChart = nextWeekly; donutChart = nextDonut;
