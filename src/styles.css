@@ -618,3 +618,55 @@ html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,
   .goal-item{align-items:flex-start;flex-direction:column;gap:5px}
   .goal-item-actions{justify-content:flex-start}
 }
+
+@media(max-width:600px){
+  html,body{height:auto;min-height:100%;overflow-x:hidden;overflow-y:auto}
+  body{min-height:100dvh}
+  #app{height:auto;min-height:100vh;min-height:100dvh;padding:max(12px,env(safe-area-inset-top)) 12px max(16px,env(safe-area-inset-bottom));gap:12px;grid-template-columns:minmax(0,1fr);grid-template-rows:none;align-content:start}
+  header{position:sticky;top:0;z-index:40;gap:8px;padding:6px 0;background:var(--bg)}
+  .brand{gap:7px}
+  .dashboard-brand-mark{width:36px;height:36px}
+  .header-utilities{gap:5px}
+  .primary-nav{gap:5px}
+  .primary-nav .nav-action{height:42px;min-height:42px;border-radius:9px}
+  .top{grid-template-columns:minmax(0,1fr);gap:10px;min-height:0}
+  .top>.box{height:auto;min-height:210px;padding:12px;border-radius:12px}
+  .top>.glass{min-height:0}
+  .top .row{align-items:center;flex-wrap:wrap;gap:6px 10px;margin-bottom:10px}
+  .top h2{font-size:13px}
+  .top .row .sub{max-height:none;overflow:visible;font-size:10px;line-height:1.45}
+  .cv{flex:none;height:150px;min-height:150px}
+  .chart-empty-state strong{font-size:12px}
+  .chart-empty-state span{font-size:10px}
+  .sumwrap{grid-template-columns:minmax(0,92px) minmax(0,1fr);gap:12px;min-height:0}
+  .glass .ring{width:min(100%,92px);max-width:92px;height:auto;aspect-ratio:1;margin:0 auto}
+  .glass .ring b{font-size:24px}
+  .glass .ring small{font-size:9px}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(52px,auto);min-width:0}
+  .glass .tile{min-width:0;padding:7px}
+  .glass .tile span{font-size:9px;overflow-wrap:anywhere}
+  .glass .tile strong{font-size:16px}
+  .panel{height:auto;min-height:0;border-radius:12px}
+  .panel .scroll{flex:none;min-height:180px;max-height:58dvh;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  #habitsTable{min-width:900px}
+  .scroll::-webkit-scrollbar{display:block;height:6px}
+  .scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+  .chk{width:18px;height:18px}
+  .metrics{padding:8px 0}
+  .metrics .mgrid{min-width:880px;height:34px}
+  .metrics .md{height:32px}
+  .addbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:12px}
+  .addfield{grid-column:1/-1;width:100%;height:44px;gap:8px}
+  .addfield input{font-size:16px}
+  .addfield .hint,.addfield kbd{display:none}
+  .addbtn{grid-column:2;height:42px;min-height:42px;padding-inline:16px}
+  .qa{display:block;align-self:center;font-size:10px}
+  .chips{grid-column:1/-1;width:100%;gap:7px;overflow-x:auto;overflow-y:hidden;padding:2px 0 5px;scrollbar-width:thin}
+  .chip{flex:none;min-height:34px;padding:7px 12px}
+  .rank{grid-template-columns:minmax(0,1fr);min-height:0;gap:0;padding:0;border-radius:12px}
+  .bottom-feature{min-height:92px;padding:14px}
+  .bottom-feature+.bottom-feature{border-top:1px solid var(--line);border-left:0}
+  .feature-head h2{font-size:13px}
+  .feature-head .sub{font-size:10px}
+  .insight-copy,.goal-empty{font-size:12px}
+}
