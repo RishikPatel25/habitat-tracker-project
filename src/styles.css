@@ -701,13 +701,14 @@ html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,
 }
 
 /* Keep the redesigned Overall contents compact inside the original row. */
+.top>.glass{padding-block:10px}
 .overall-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;min-height:0}
 .monthly-progress{gap:3px}
 .glass .ring{width:min(100%,110px);max-width:110px;aspect-ratio:1}
 .glass .ring b{font-size:27px}
 .glass .ring small{font-size:9px;margin-top:3px}
 .checkin-count{font-size:9px;line-height:1.2}
-.streak-cards{gap:5px;align-content:center}
+.streak-cards{gap:3px;align-content:center}
 .streak-card{height:54px;min-height:54px;padding:4px 8px;gap:8px}
 .streak-card>div{gap:1px;align-content:center;line-height:1.2}
 .streak-card>div>span{font-size:9px;line-height:1.2}
@@ -715,12 +716,13 @@ html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,
 .streak-card small{font-size:8px;line-height:1.2}
 .streak-icon{width:25px;height:25px;font-size:13px;border-radius:7px}
 .streak-icon.trophy{font-size:12px}
+.monthly-progress,.streak-cards{transform:translateY(-10px)}
 @media(max-width:900px) and (min-width:601px){
   .overall-layout{gap:5px}
   .glass .ring{width:min(100%,78px);max-width:78px}
   .glass .ring b{font-size:21px}
   .checkin-count{font-size:7px}
-  .streak-cards{gap:3px}
+  .streak-cards{gap:2px}
   .streak-card{height:38px;min-height:38px;padding:3px 4px;gap:4px}
   .streak-card>div>span{font-size:7px}
   .streak-card strong{font-size:12px}
