@@ -336,6 +336,10 @@ html[data-theme=dark]{color-scheme:dark}html[data-theme=light]{color-scheme:ligh
   .goal-item-actions{justify-content:flex-start}
 }
 
+/* Future plans remain visibly distinct from completed check-ins. */
+#app .panel .chk.planned:checked{border:1px dashed var(--accent);background:rgba(var(--rgb),.1);box-shadow:inset 0 0 0 1px rgba(var(--rgb),.2)}
+#app .panel .chk.planned:checked::after{border-color:var(--accent)}
+
 /* A calmer, more consistent response to everyday dashboard interactions. */
 #app{--motion-ease:cubic-bezier(.22,.68,0,1.08)}
 #app button,#app select,#app a,#app .panel,#app .box,#app .habit-action-menu,

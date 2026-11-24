@@ -9,7 +9,7 @@ import { addHabitsToState, editHabitInState, archiveHabitInState, restoreHabitIn
 import { createSafeStorage, isPlainObject, exportLocalData, importLocalData } from './features/storage/localStorage.js';
 
 import { renderWellbeing } from './features/tracking/wellbeing.js';
-import { persistCompletion } from './features/tracking/completions.js';
+import { persistCompletion, completionValueForInteraction, migrateFutureCompletions } from './features/tracking/completions.js';
 import { buildImagePdfBlob, buildMonthlyCsv, makePrintReadyHtml, renderMonthlyReportCanvas } from './features/exports/monthlyExports.js';
 import { createSupabaseClient, loadCloudConfig } from './features/cloud/supabaseClient.js';
 import { cacheTrackerSnapshot, mergeTrackerSnapshots, normalizeTrackerSnapshot, preserveTrackerSnapshot, readAccountCache, readTrackerSnapshot, trackerSnapshotHasData, writeTrackerSnapshot } from './features/cloud/trackerSync.js';
@@ -135,8 +135,11 @@ async function saveAndVerifyCloud(userId,snapshot,expectedRevision){const result
 
 async function applyAccountSnapshot(userId,snapshot){
   cloudHydrating=true;
-  try{writeTrackerSnapshot(snapshot,localStorage);localStorage.setItem('ht_cloud_owner',userId);cacheTrackerSnapshot(userId,snapshot);localStorage.removeItem(cloudPendingKey(userId));loadSavedData();renderNotes();if(charts){populateDateSelectors();updateCalendar()}}
+  let migratedPlans=0;
+  try{writeTrackerSnapshot(snapshot,localStorage);localStorage.setItem('ht_cloud_owner',userId);cacheTrackerSnapshot(userId,snapshot);localStorage.removeItem(cloudPendingKey(userId));migratedPlans=loadSavedData();renderNotes();if(charts){populateDateSelectors();updateCalendar()}}
   finally{cloudHydrating=false}
+  if(migratedPlans&&cloudReady)queueCloudSave();
+  return migratedPlans;
 }
 
 async function activateCloudAccount(session,{startup=false}={}){
@@ -148,6 +151,8 @@ async function activateCloudAccount(session,{startup=false}={}){
   const remoteRow=await cloudClient.getTracker(user.id);let chosen=remoteRow?normalizeTrackerSnapshot(remoteRow.data):normalizeTrackerSnapshot({});
   cloudRevision=Number(remoteRow?.revision)||0;
   let localCandidate=hasPending&&(trackerSnapshotHasData(cached)||sameAccount&&hasLocal)?mergeTrackerSnapshots(cached,sameAccount?localSnapshot:{}):(!currentOwner&&hasLocal?localSnapshot:null);
+  migrateFutureCompletions(chosen.checksData,new Date());
+  if(localCandidate)migrateFutureCompletions(localCandidate.checksData,new Date());
   if(!remoteRow&&sameAccount&&trackerSnapshotHasData(cached))localCandidate=cached;
   if(!remoteRow&&sameAccount&&trackerSnapshotHasData(cached)&&!hasPending&&!confirm('The cloud tracker is missing, but a saved account recovery copy exists on this device. Restore that copy to the cloud?'))localCandidate=null;
   if(localCandidate){
@@ -160,7 +165,7 @@ async function activateCloudAccount(session,{startup=false}={}){
     if(!sameAccount&&hasLocal)preserveTrackerSnapshot(localStorage);
     const verified=await saveAndVerifyCloud(user.id,chosen,cloudRevision);cloudRevision=Number(verified.revision)||cloudRevision;
   }else if(!sameAccount&&hasLocal)preserveTrackerSnapshot(localStorage);
-  await applyAccountSnapshot(user.id,chosen);cloudReady=true;recoveryMode=session?.type==='recovery';updateAccountUi(recoveryMode?'Set a new password below.':'Signed in. Your cloud tracker is ready.');setCloudIndicator('Saved to cloud');
+  const migratedPlans=await applyAccountSnapshot(user.id,chosen);cloudReady=true;if(migratedPlans)queueCloudSave();recoveryMode=session?.type==='recovery';updateAccountUi(recoveryMode?'Set a new password below.':'Signed in. Your cloud tracker is ready.');setCloudIndicator('Saved to cloud');
 }
 
 async function configureCloud(){
@@ -219,10 +224,12 @@ function loadSavedData(){
     if(!/^\d{1,4}-(?:[0-9]|1[01])$/.test(key)||!validObject(month)){trackerState.checksData[key]={};invalidChecks=true;continue}
     for(const[id,log]of Object.entries(month)){
       if(!validObject(log)){delete month[id];invalidChecks=true;continue}
-      for(const[day,value]of Object.entries(log))if(!/^\d+$/.test(day)||Number(day)<1||Number(day)>31||typeof value!=='boolean')invalidChecks=true;
+      for(const[day,value]of Object.entries(log))if(!/^\d+$/.test(day)||Number(day)<1||Number(day)>31||![true,false,'planned'].includes(value)){delete log[day];invalidChecks=true}
     }
   }
   if(invalidChecks){preserveRaw('ht_checks');storageWarning('Some completion records were invalid. A recovery copy was kept before invalid entries were skipped.')}
+  const migratedPlans=migrateFutureCompletions(trackerState.checksData,new Date());
+  if(migratedPlans)write('ht_checks',trackerState.checksData);
   const loadWellbeing=(key)=>{
     const value=read(key,{});let invalid=!validObject(value);
     if(invalid){preserveRaw(key);storageWarning(`Saved ${key==='ht_mood'?'mood':'sleep'} data is invalid. A recovery copy was kept.`);return{}}
@@ -258,6 +265,7 @@ function loadSavedData(){
   });
   if(hasValidHabits&&rawHabits.some(x=>validObject(x)&&(!Array.isArray(x.schedule)||!isValidLocalDate(x.startDate))))saveHabits();
   if(read('ht_schema_version',null)===null)write('ht_schema_version',2);
+  return migratedPlans;
 }
 
 const saveHabits=()=>write('ht_habits',trackerState.habits);
@@ -345,9 +353,10 @@ function renderTableBody(){
 
       if(d<=n){
 
-        const c=document.createElement('input');c.type='checkbox';c.className='chk';c.checked=trackerState.checksData[mk][h.id][d]===true;const date=dateFor(trackerState.year,trackerState.month,d),future=isFuture(d),beforeStart=isBeforeHabitStart(h,date),isScheduled=scheduled(h,date);c.disabled=!isScheduled;if(!isScheduled)td.classList.add('off');else if(future)td.classList.add('future');
+        const date=dateFor(trackerState.year,trackerState.month,d),future=isFuture(d),isToday=localISO(date)===localISO(new Date()),beforeStart=isBeforeHabitStart(h,date),isScheduled=scheduled(h,date),storedValue=trackerState.checksData[mk][h.id][d],planned=storedValue==='planned'&&(future||isToday);
+        const c=document.createElement('input');c.type='checkbox';c.className='chk';c.checked=storedValue===true||planned;c.classList.toggle('planned',planned);c.disabled=!isScheduled;if(!isScheduled)td.classList.add('off');else if(future)td.classList.add('future');
 
-        const dateNotes=[];if(beforeStart)dateNotes.push(`before tracking start (${h.startDate}); only this explicitly backfilled date is included in progress`);if(!isScheduled)dateNotes.push('rest day; not scheduled');if(future)dateNotes.push('future date; saved but excluded from progress until that date');
+        const dateNotes=[];if(beforeStart)dateNotes.push(`before tracking start (${h.startDate}); only this explicitly backfilled date is included in progress`);if(!isScheduled)dateNotes.push('rest day; not scheduled');if(planned)dateNotes.push(isToday?'planned check-in; click to confirm completion':'planned check-in; click to remove plan');else if(future)dateNotes.push('future date; click to plan a check-in');
         const dateNote=dateNotes.join('; ');c.setAttribute('aria-label',`${h.title}, day ${d}${dateNote?`, ${dateNote}`:''}`);if(dateNote)c.title=dateNote.charAt(0).toUpperCase()+dateNote.slice(1)+'.';
 
         c.onchange=e=>toggleCheck(h.id,d,e.target.checked,e.target);
@@ -374,24 +383,26 @@ function toggleCheck(id,day,v,checkbox){
 
   const mk=getKey(trackerState.year,trackerState.month);
 
-  const habit=trackerState.habits.find(h=>h.id===id),dateObject=dateFor(trackerState.year,trackerState.month,day),date=localISO(dateObject);
+  const habit=trackerState.habits.find(h=>h.id===id),dateObject=dateFor(trackerState.year,trackerState.month,day),date=localISO(dateObject),today=localISO(new Date()),isToday=date===today,isFuture=date>today;
   const previousBackfilledDates=habit?.backfilledDates,previousMonth=trackerState.checksData[mk],previousHabitChecks=previousMonth?.[id],hadPrevious=!!previousHabitChecks&&Object.hasOwn(previousHabitChecks,day),previousValue=previousHabitChecks?.[day];
-  if(!persistCompletion(trackerState.checksData,mk,id,day,v,value=>write('ht_checks',value))){
-    if(checkbox)checkbox.checked=trackerState.checksData[mk]?.[id]?.[day]===true;
+  const nextValue=completionValueForInteraction(previousValue,v,{isFuture,isToday}),nextIsPlanned=nextValue==='planned';
+  if(!persistCompletion(trackerState.checksData,mk,id,day,nextValue,value=>write('ht_checks',value))){
+    if(checkbox){const oldPlanned=previousValue==='planned'&&(isFuture||isToday);checkbox.checked=previousValue===true||oldPlanned;checkbox.classList.toggle('planned',oldPlanned)}
     storageWarning('This completion could not be saved. The checkbox was restored to its previous saved state.');
     recalculateStatsAndCharts();return;
   }
-  if(habit&&isBeforeHabitStart(habit,dateObject)){
+  if(checkbox){const showPlanned=nextIsPlanned&&(isFuture||isToday);checkbox.checked=nextValue===true||showPlanned;checkbox.classList.toggle('planned',showPlanned);checkbox.title=showPlanned?(isToday?'Planned check-in. Click to confirm completion.':'Planned check-in. Click to remove plan.'):(isFuture?'Future date. Click to plan a check-in.':'');checkbox.setAttribute('aria-label',`${habit?.title||'Habit'}, day ${day}${showPlanned?`, ${isToday?'planned check-in; click to confirm completion':'planned check-in; click to remove plan'}`:isFuture?', future date; click to plan a check-in':''}`)}
+  if(habit&&nextValue!=='planned'&&isBeforeHabitStart(habit,dateObject)){
     const dates=new Set(Array.isArray(habit.backfilledDates)?habit.backfilledDates.filter(isValidLocalDate):[]);
-    if(v)dates.add(date);else dates.delete(date);
+    if(nextValue===true)dates.add(date);else dates.delete(date);
     habit.backfilledDates=[...dates].sort();
-    if(v && date < habit.startDate) habit.startDate = date;
+    if(nextValue===true && date < habit.startDate) habit.startDate = date;
     if(!saveHabits()){
       habit.backfilledDates=previousBackfilledDates;
       if(hadPrevious)trackerState.checksData[mk][id][day]=previousValue;
       else delete trackerState.checksData[mk][id][day];
       write('ht_checks',trackerState.checksData);
-      if(checkbox)checkbox.checked=previousValue===true;
+      if(checkbox){const oldPlanned=previousValue==='planned'&&(isFuture||isToday);checkbox.checked=previousValue===true||oldPlanned;checkbox.classList.toggle('planned',oldPlanned)}
       recalculateStatsAndCharts();return;
     }
   }
@@ -448,9 +459,6 @@ function recalculateStatsAndCharts(){
   const a=calculateDashboardAnalytics({habits:trackerState.habits,archivedHabits:trackerState.archivedHabits,checksData:trackerState.checksData,sleepData:trackerState.sleepData,year:trackerState.year,month:trackerState.month,now:new Date()});
 
   $('donutPercent').textContent = a.monthlyOverallPercent === null ? '0%' : `${Math.round(a.monthlyOverallPercent)}%`;
-  $('donutSub').textContent = `${a.monthlyCompletedCheckins} / ${a.monthlyEligibleCheckins} check-ins`;
-  $('donutSub').title = 'Completed / eligible scheduled check-ins this calendar month through today';
-
   $('avgDailyRate').textContent=a.averageDailyRate===null?'7-day avg —':`7-day avg ${Math.round(a.averageDailyRate)}%`;$('statStreak').textContent=`${a.currentStreak} ${a.currentStreak===1?'day':'days'}`;$('statBestStreak').textContent=`${a.bestStreak} ${a.bestStreak===1?'day':'days'}`;
 
   const noHabits=trackerState.habits.length===0,hasDailyData=a.dailyBars.some(Number.isFinite),hasWeeklyData=a.weekly.some(week=>week.rate!==null);

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { calculateDashboardAnalytics, buildMonthlyReportData, dateFor, isHabitEligibleOnDate, isBeforeHabitStart, getDaysInMonth, getWeekRanges } from '../src/features/analytics/calculations.js';
-import { persistCompletion } from '../src/features/tracking/completions.js';
+import { persistCompletion, completionValueForInteraction, migrateFutureCompletions } from '../src/features/tracking/completions.js';
 import { buildMonthlyCsv } from '../src/features/exports/monthlyExports.js';
 
 class MemoryStorage {
@@ -118,6 +118,41 @@ test('save and refresh round trip retains the same completion and dependent coun
   const refreshed = JSON.parse(storage.getItem('ht_checks'));
   assert.deepEqual(analyze(refreshed, [habits[0]]), analyze(checksData, [habits[0]]));
   assert.equal(refreshed['2026-9'].h1[3], true);
+});
+
+test('future clicks persist as plans and only explicit confirmation creates a completion', () => {
+  const habit = { id: 'future', title: 'Future', startDate: '2026-10-01', schedule: [0, 1, 2, 3, 4, 5, 6] };
+  const checksData = {}, storage = new MemoryStorage(), persist = (value) => { storage.setItem('ht_checks', JSON.stringify(value)); return true; };
+  const planned = completionValueForInteraction(undefined, true, { isFuture: true });
+  assert.equal(planned, 'planned');
+  assert.equal(persistCompletion(checksData, '2026-9', habit.id, 25, planned, persist), true);
+  assert.deepEqual(JSON.parse(storage.getItem('ht_checks'))['2026-9'].future[25], 'planned');
+  const futureMetrics = calculateDashboardAnalytics({ habits: [habit], checksData, year: 2026, month: 9, now: new Date(2026, 9, 15, 12) });
+  assert.equal(futureMetrics.monthlyCompletedCheckins, 0);
+  assert.equal(futureMetrics.currentStreak, 0);
+  assert.equal(futureMetrics.bestStreak, 0);
+  assert.equal(completionValueForInteraction('planned', false, { isFuture: true }), false);
+  assert.equal(persistCompletion(checksData, '2026-9', habit.id, 25, false, persist), true);
+  assert.equal(checksData['2026-9'].future[25], false);
+
+  checksData['2026-9'].future[15] = 'planned';
+  const confirmed = completionValueForInteraction('planned', false, { isToday: true });
+  assert.equal(confirmed, true);
+  assert.equal(persistCompletion(checksData, '2026-9', habit.id, 15, confirmed, persist), true);
+  const afterConfirm = calculateDashboardAnalytics({ habits: [habit], checksData, year: 2026, month: 9, now: new Date(2026, 9, 15, 12) });
+  assert.equal(afterConfirm.monthlyCompletedCheckins, 1);
+  assert.equal(afterConfirm.currentStreak, 1);
+  assert.equal(persistCompletion(checksData, '2026-9', habit.id, 15, false, persist), true);
+  const afterUncheck = calculateDashboardAnalytics({ habits: [habit], checksData, year: 2026, month: 9, now: new Date(2026, 9, 15, 12) });
+  assert.equal(afterUncheck.monthlyCompletedCheckins, 0);
+  assert.equal(afterUncheck.currentStreak, 0);
+});
+
+test('legacy future premarks migrate to plans while arrived completions remain completed', () => {
+  const checksData = { '2026-9': { h: { 23: true, 24: true, 25: true } } };
+  assert.equal(migrateFutureCompletions(checksData, new Date(2026, 9, 24, 8)), 1);
+  assert.deepEqual(checksData['2026-9'].h, { 23: true, 24: true, 25: 'planned' });
+  assert.equal(migrateFutureCompletions(checksData, new Date(2026, 9, 24, 20)), 0);
 });
 
 test('non-boolean truthy records never appear checked or inflate dashboard and report counts', () => {
