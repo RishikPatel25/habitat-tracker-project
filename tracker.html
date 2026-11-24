@@ -82,14 +82,15 @@ try {
       <div class="cv"><canvas id="weeklyChart"></canvas><div class="chart-empty-state" id="weeklyChartEmpty" hidden><strong>Weekly progress</strong><span>Compare your habit completion week by week.</span></div></div>
     </section>
     <section class="box pad glass">
-      <div class="row"><h2>Overall</h2><span class="sub" id="overallSub">Current progress</span></div>
-      <div class="sumwrap">
-        <div class="ring"><canvas id="donutChart"></canvas><div class="rc"><b id="donutPercent">0%</b><small id="donutSub"></small></div></div>
-        <div class="tiles">
-          <div class="tile"><span id="statGoalLabel">Goal to date</span><strong id="statGoal">0</strong></div>
-          <div class="tile"><span>Done</span><strong id="statCompleted">0</strong></div>
-          <div class="tile"><span>Left</span><strong id="statLeft">0</strong></div>
-          <div class="tile"><span>Streak</span><strong id="statStreak">0d</strong></div>
+      <div class="row"><h2>Overall</h2></div>
+      <div class="overall-layout">
+        <div class="monthly-progress">
+          <div class="ring"><canvas id="donutChart"></canvas><div class="rc"><b id="donutPercent">0%</b><small>Completed</small></div></div>
+          <span class="checkin-count" id="donutSub">0 / 0 check-ins</span>
+        </div>
+        <div class="streak-cards">
+          <div class="streak-card"><span class="streak-icon flame" aria-hidden="true">♨</span><div><span>Current Streak</span><strong id="statStreak">0 days</strong><small>Keep it going</small></div></div>
+          <div class="streak-card"><span class="streak-icon trophy" aria-hidden="true">🏆</span><div><span>Best Streak</span><strong id="statBestStreak">0 days</strong><small>Personal record</small></div></div>
         </div>
       </div>
     </section>
@@ -176,7 +177,7 @@ try {
     <button class="account-close" type="button" onclick="closeAccountDialog()" aria-label="Close account dialog">&times;</button>
     <div class="account-orbit orbit-one"></div><div class="account-orbit orbit-two"></div>
     <div class="account-content">
-      <img class="account-logo" src="/src/assets/ritual-habit-full.svg" alt="Ritual Habit logo">
+      <img class="account-logo" src="/src/assets/ritual-habit-logo-source.png" alt="Ritual Habit logo">
       <p class="account-eyebrow">YOUR PERSONAL SPACE</p>
       <h2 id="accountTitle">Welcome back</h2>
       <p class="account-description">Sign in to sync your habits and progress.</p>

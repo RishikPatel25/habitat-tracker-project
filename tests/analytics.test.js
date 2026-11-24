@@ -5,6 +5,21 @@ import { calculateDashboardAnalytics, buildMonthlyReportData, getDaysInMonth, ge
 const today = new Date(2026, 9, 17, 12);
 const habit = { id: 'h1', title: 'Read', emoji: '📖', startDate: '2026-10-01', schedule: [0, 1, 2, 3, 4, 5, 6] };
 
+test('Overall counts current-month eligible check-ins and calendar-day streaks across all habit logs', () => {
+  const h = { id: 'active', startDate: '2026-10-01', schedule: [1, 2, 3, 4, 5, 6, 0] };
+  const result = calculateDashboardAnalytics({ habits: [h], archivedHabits: [{ id: 'old', startDate: '2026-10-01', archivedAt: '2026-10-16', schedule: [1, 2, 3, 4, 5, 6, 0] }], checksData: { '2026-8': { active: { 30: true }, old: { 30: true } }, '2026-9': { active: { 1: true, 2: true, 17: true }, old: { 1: true, 2: true } } }, year: 2026, month: 9, now: new Date(2026, 9, 2, 23) });
+  assert.equal(result.monthlyEligibleCheckins, 4);
+  assert.equal(result.monthlyCompletedCheckins, 4);
+  assert.equal(result.monthlyOverallPercent, 100);
+  assert.equal(result.currentStreak, 3);
+  assert.equal(result.bestStreak, 3);
+  const unchecked = calculateDashboardAnalytics({ habits: [h], archivedHabits: [{ id: 'old', startDate: '2026-10-01', archivedAt: '2026-10-16', schedule: [1, 2, 3, 4, 5, 6, 0] }], checksData: { '2026-9': { active: { 1: true, 2: true, 17: true }, old: { 1: false, 2: true } } }, year: 2026, month: 9, now: new Date(2026, 9, 2, 23) });
+  assert.equal(unchecked.monthlyCompletedCheckins, 3);
+  assert.equal(unchecked.monthlyOverallPercent, 75);
+  const missedToday = calculateDashboardAnalytics({ habits: [h], checksData: { '2026-9': { active: { 1: true, 2: true } } }, year: 2026, month: 9, now: new Date(2026, 9, 3, 12) });
+  assert.equal(missedToday.currentStreak, 2);
+});
+
 test('future pre-marks are planned and included in projected month overall, not completed count', () => {
   const result = calculateDashboardAnalytics({ habits: [habit], checksData: { '2026-9': { h1: { 2: true, 17: true, 31: true } } }, year: 2026, month: 9, now: today });
   assert.equal(result.done, 2);

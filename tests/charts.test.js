@@ -31,7 +31,7 @@ test('chart updates reuse instances, and rebuild destroys old instances first', 
   charts.update(sample); charts.update(sample);
   assert.deepEqual(MockChart.instances[2].data.datasets[0].data, [50, 50]);
   assert.ok(MockChart.instances.every((chart) => chart.updateCount === 3));
-  assert.deepEqual(MockChart.instances.map((chart) => chart.updateModes.slice(-2)), [['none', 'none'], ['none', 'none'], ['none', 'none']]);
+  assert.deepEqual(MockChart.instances.map((chart) => chart.updateModes.slice(-2)), [['none', 'none'], ['none', 'none'], [undefined, undefined]]);
   assert.equal(charts.update({ dailyBars: [], dailyAverage: [], plannedDays: [], weekly: [], overallPercent: 0 }), true);
   assert.equal(charts.rebuild(), true);
   assert.ok(MockChart.instances.slice(0, 3).every((chart) => chart.destroyed));

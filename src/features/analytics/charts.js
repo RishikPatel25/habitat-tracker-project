@@ -163,7 +163,8 @@ export function createCharts({ css, warn }) {
       donutChart.data.datasets[0].data = [ringPercent, Math.max(0, 100 - ringPercent)];
       // The ring percentage is rendered as text outside the canvas. Update it
       // atomically with the arc so the two never disagree during a tween.
-      donutChart.update('none');
+      donutChart.options.animation = { duration: 420, easing: 'easeOutCubic' };
+      donutChart.update();
       return true;
     } catch (error) {
       console.error('[Ritual Habit] Chart update failed.', error);

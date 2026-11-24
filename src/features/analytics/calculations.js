@@ -107,7 +107,7 @@ function streaksFor(habit, checksData, today) {
  * Days without eligible habits and future dates are omitted. Values remain
  * unrounded until display.
  */
-export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}, year, month, now = new Date() }) {
+export function calculateDashboardAnalytics({ habits, archivedHabits = [], checksData, sleepData = {}, year, month, now = new Date() }) {
   if (!Number.isInteger(year) || year < 1 || !Number.isInteger(month) || month < 0 || month > 11 || !(now instanceof Date) || !Number.isFinite(now.getTime())) return emptyAnalytics();
   const seenHabitIds = new Set();
   habits = Array.isArray(habits) ? habits.filter((habit) => {
@@ -203,7 +203,64 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
   const overallPercent = goalToDate ? done / goalToDate * 100 : null;
   const monthRemaining = Math.max(0, monthGoal - done - planned);
   const projectedPercent = monthGoal ? (done + planned) / monthGoal * 100 : null;
-  const currentStreak = habitStats.reduce((max, habit) => Math.max(max, habit.currentStreak), 0);
+  // Overall metrics always describe the user's current local calendar month,
+  // independent of the month selected for the table and charts.
+  const metricYear = now.getFullYear(), metricMonth = now.getMonth();
+  const metricToday = dateFor(metricYear, metricMonth, now.getDate());
+  const metricHabits = [...habits, ...(Array.isArray(archivedHabits) ? archivedHabits : [])];
+  const seenMetricIds = new Set();
+  let monthlyEligibleCheckins = 0, monthlyCompletedCheckins = 0;
+  for (const habit of metricHabits) {
+    if (!habit?.id || seenMetricIds.has(habit.id)) continue;
+    seenMetricIds.add(habit.id);
+    const archivedAt = isValidLocalDate(habit.archivedAt) ? habit.archivedAt : null;
+    for (let day = 1; day <= metricToday.getDate(); day++) {
+      const date = dateFor(metricYear, metricMonth, day), iso = localISO(date);
+      if ((archivedAt && iso > archivedAt) || !isHabitEligibleOnDate(habit, date)) continue;
+      monthlyEligibleCheckins++;
+      if (checksData?.[getMonthKey(metricYear, metricMonth)]?.[habit.id]?.[day] === true) monthlyCompletedCheckins++;
+    }
+  }
+  // Permanently deleted habits keep their completion log but no schedule
+  // metadata. Preserve each arrived true record as one historical eligible
+  // occurrence so deleting a habit cannot erase completed month history.
+  const currentMonthLogs = checksData?.[getMonthKey(metricYear, metricMonth)] || {};
+  for (const [id, record] of Object.entries(currentMonthLogs)) {
+    if (seenMetricIds.has(id) || !record || typeof record !== 'object') continue;
+    for (const [rawDay, checked] of Object.entries(record)) {
+      const day = Number(rawDay), date = dateFor(metricYear, metricMonth, day);
+      if (checked === true && /^\d+$/.test(rawDay) && date.getFullYear() === metricYear && date.getMonth() === metricMonth && date <= metricToday) {
+        monthlyEligibleCheckins++; monthlyCompletedCheckins++;
+      }
+    }
+  }
+  // A streak is a run of calendar dates with at least one completion, not a
+  // run per habit. Retained logs from deleted habits still contribute.
+  const completedDates = new Set();
+  for (const [key, monthData] of Object.entries(checksData || {})) {
+    const match = /^(\d{1,4})-(\d{1,2})$/.exec(key);
+    if (!match || !monthData || typeof monthData !== 'object') continue;
+    const y = Number(match[1]), m = Number(match[2]);
+    for (const record of Object.values(monthData)) {
+      if (!record || typeof record !== 'object') continue;
+      for (const [rawDay, checked] of Object.entries(record)) {
+        const day = Number(rawDay), date = dateFor(y, m, day);
+        if (checked === true && /^\d+$/.test(rawDay) && date.getFullYear() === y && date.getMonth() === m && date <= metricToday) completedDates.add(localISO(date));
+      }
+    }
+  }
+  const yesterday = new Date(metricToday); yesterday.setDate(yesterday.getDate() - 1);
+  let currentStreak = 0;
+  let cursor = completedDates.has(localISO(metricToday)) ? new Date(metricToday) : yesterday;
+  while (completedDates.has(localISO(cursor))) { currentStreak++; cursor.setDate(cursor.getDate() - 1); }
+  let bestStreak = 0, run = 0, previous = null;
+  for (const iso of [...completedDates].sort()) {
+    const date = new Date(`${iso}T12:00:00`);
+    if (previous) { const next = new Date(previous); next.setDate(next.getDate() + 1); run = localISO(next) === iso ? run + 1 : 1; }
+    else run = 1;
+    bestStreak = Math.max(bestStreak, run); previous = date;
+  }
+  const monthlyOverallPercent = monthlyEligibleCheckins ? monthlyCompletedCheckins / monthlyEligibleCheckins * 100 : null;
   const topHabits = [...habitStats].sort((a, b) => b.percentage - a.percentage).slice(0, 3);
   const weekdayRates = Array.from({ length: 7 }, () => []);
   dailyRates.forEach((rate, index) => {
@@ -231,7 +288,7 @@ export function calculateDashboardAnalytics({ habits, checksData, sleepData = {}
     goal: goalToDate,
     goalToDate,
     remaining,
-    overallPercent,
+    overallPercent, monthlyOverallPercent, monthlyCompletedCheckins, monthlyEligibleCheckins, bestStreak,
     monthGoal,
     monthRemaining,
     projectedPercent,
