@@ -700,3 +700,27 @@ html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,
   .feature-head .sub{font-size:10px}
   .insight-copy,.goal-empty{font-size:12px}
 }
+
+/* Keep the Overall summary inside its grid track at every viewport size. */
+@media(min-width:901px){
+  #app{grid-template-rows:auto minmax(250px,32dvh) minmax(0,1fr) auto}
+}
+@media(min-width:601px) and (max-width:900px){
+  #app{grid-template-rows:auto minmax(190px,22dvh) minmax(0,1fr) auto}
+  .overall-layout{min-height:150px}
+}
+@media(max-width:600px){
+  #app>.top>.glass{min-height:250px}
+  .overall-layout{grid-template-columns:minmax(120px,.85fr) minmax(0,1.15fr);gap:16px;min-height:190px}
+  .glass .ring{width:min(100%,150px);max-width:150px;aspect-ratio:1}
+  .glass .ring b{font-size:30px}
+  .glass .ring small{font-size:10px}
+  .checkin-count{font-size:10px}
+  .streak-cards{gap:8px}
+  .streak-card{gap:9px;padding:9px;border-radius:9px}
+  .streak-icon{width:28px;height:28px;font-size:15px}
+  .streak-icon.trophy{font-size:13px}
+  .streak-card>div>span{font-size:9px}
+  .streak-card strong{font-size:17px}
+  .streak-card small{font-size:8px}
+}
