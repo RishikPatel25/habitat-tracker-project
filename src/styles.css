@@ -555,7 +555,6 @@ html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,
   .streak-card small{font-size:7px}
   .checkin-count{font-size:8px}
 }
-@media(max-width:900px) and (max-height:900px){.glass .ring{width:min(100%,8.5dvh)}}
 .mgrid input{user-select:text;cursor:text;touch-action:manipulation;transition:background-color .12s,box-shadow .12s}
 .mgrid input:hover,.mgrid input:focus{background:rgba(var(--rgb),.08)}
 .mgrid input::placeholder{color:var(--mut);opacity:.75}
@@ -701,26 +700,45 @@ html[data-preset=obsidian][data-theme=dark] .calendar-pop{background:rgba(10,12,
   .insight-copy,.goal-empty{font-size:12px}
 }
 
-/* Keep the Overall summary inside its grid track at every viewport size. */
-@media(min-width:901px){
-  #app{grid-template-rows:auto minmax(250px,32dvh) minmax(0,1fr) auto}
-}
-@media(min-width:601px) and (max-width:900px){
-  #app{grid-template-rows:auto minmax(190px,22dvh) minmax(0,1fr) auto}
-  .overall-layout{min-height:150px}
+/* Keep the redesigned Overall contents compact inside the original row. */
+.overall-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;min-height:0}
+.monthly-progress{gap:3px}
+.glass .ring{width:min(100%,110px);max-width:110px;aspect-ratio:1}
+.glass .ring b{font-size:27px}
+.glass .ring small{font-size:9px;margin-top:3px}
+.checkin-count{font-size:9px;line-height:1.2}
+.streak-cards{gap:5px;align-content:center}
+.streak-card{height:54px;min-height:54px;padding:4px 8px;gap:8px}
+.streak-card>div{gap:1px;align-content:center;line-height:1.2}
+.streak-card>div>span{font-size:9px;line-height:1.2}
+.streak-card strong{font-size:16px;line-height:1.2}
+.streak-card small{font-size:8px;line-height:1.2}
+.streak-icon{width:25px;height:25px;font-size:13px;border-radius:7px}
+.streak-icon.trophy{font-size:12px}
+@media(max-width:900px) and (min-width:601px){
+  .overall-layout{gap:5px}
+  .glass .ring{width:min(100%,78px);max-width:78px}
+  .glass .ring b{font-size:21px}
+  .checkin-count{font-size:7px}
+  .streak-cards{gap:3px}
+  .streak-card{height:38px;min-height:38px;padding:3px 4px;gap:4px}
+  .streak-card>div>span{font-size:7px}
+  .streak-card strong{font-size:12px}
+  .streak-card small{font-size:6px}
+  .streak-icon{width:20px;height:20px;font-size:11px}
+  .streak-icon.trophy{font-size:10px}
 }
 @media(max-width:600px){
-  #app>.top>.glass{min-height:250px}
-  .overall-layout{grid-template-columns:minmax(120px,.85fr) minmax(0,1.15fr);gap:16px;min-height:190px}
-  .glass .ring{width:min(100%,150px);max-width:150px;aspect-ratio:1}
-  .glass .ring b{font-size:30px}
-  .glass .ring small{font-size:10px}
-  .checkin-count{font-size:10px}
-  .streak-cards{gap:8px}
-  .streak-card{gap:9px;padding:9px;border-radius:9px}
-  .streak-icon{width:28px;height:28px;font-size:15px}
-  .streak-icon.trophy{font-size:13px}
-  .streak-card>div>span{font-size:9px}
-  .streak-card strong{font-size:17px}
-  .streak-card small{font-size:8px}
+  #app>.top>.glass{min-height:190px}
+  .overall-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-height:140px}
+  .glass .ring{width:min(100%,110px);max-width:110px}
+  .glass .ring b{font-size:27px}
+  .checkin-count{font-size:8px}
+  .streak-cards{gap:5px}
+  .streak-card{height:60px;min-height:60px;padding:5px 6px;gap:6px}
+  .streak-card>div>span{font-size:8px}
+  .streak-card strong{font-size:14px}
+  .streak-card small{font-size:7px}
+  .streak-icon{width:22px;height:22px;font-size:12px}
+  .streak-icon.trophy{font-size:10px}
 }
